@@ -15,12 +15,13 @@ import java.util.stream.Collectors;
 public class CsvQuizFactory implements QuizFactory {
 
     private final CSVFormat csvFormat;
+
     public CsvQuizFactory(CSVFormat csvFormat) {
         this.csvFormat = csvFormat;
     }
 
     @Override
-    public Quiz create(Reader inQuiz) throws QuizCreatingException {
+    public Quiz create(Reader inQuiz) {
         try {
             val csvQuizRecords = csvFormat.parse(inQuiz);
             val questions =

@@ -1,6 +1,6 @@
 package ru.vasiliyplatonov.homework1.service.quizfactory;
 
-public class QuizCreatingException extends Exception {
+public class QuizCreatingException extends RuntimeException {
     public QuizCreatingException() {
         super();
     }
