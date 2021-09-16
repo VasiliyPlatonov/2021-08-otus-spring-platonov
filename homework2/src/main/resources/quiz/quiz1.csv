@@ -1,0 +1,6 @@
+question,a,b,c,d,answer
+AOP is the part of Core Container in Spring Framework.,yes,no,,,a
+What is default scope of bean in Spring framework?,singleton,prototype,request,session,a
+What is true about BeanPostProcessor?,It is a concrete class.,It is an interface.,It is an abstract class.,None of the above.,b
+Which is correct for Spring Framework?,Spring framework is light-weight solution.,Spring framework is heavy-weight solution.,,,a
+What do you mean by 'bean'?,component,object,class,xml file,b
