@@ -3,6 +3,7 @@ package ru.vasiliyplatonov.homework2.service.quizfactory;
 import lombok.val;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
+import org.springframework.stereotype.Service;
 import ru.vasiliyplatonov.homework2.domain.Answer;
 import ru.vasiliyplatonov.homework2.domain.Question;
 import ru.vasiliyplatonov.homework2.domain.Quiz;
@@ -12,6 +13,7 @@ import java.io.Reader;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+@Service("quizFactory")
 public class CsvQuizFactory implements QuizFactory {
 
     private final CSVFormat csvFormat;
