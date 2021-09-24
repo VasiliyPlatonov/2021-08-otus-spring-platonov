@@ -1,4 +1,5 @@
 target/
+.gradle
 
 # Compiled class file
 *.class
