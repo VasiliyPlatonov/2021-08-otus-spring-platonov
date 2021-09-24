@@ -12,6 +12,7 @@ public class App {
 		val applicationContext = new AnnotationConfigApplicationContext(AppConfig.class);
 		val quizController = applicationContext.getBean("quizController", QuizController.class);
 
-		quizController.showQuiz();
+		quizController.conductQuiz();
+
 	}
 }
