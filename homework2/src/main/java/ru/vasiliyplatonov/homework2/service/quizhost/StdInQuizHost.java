@@ -18,13 +18,16 @@ public class StdInQuizHost implements QuizHost {
 	@Override
 	public int conductQuiz(Quiz quiz) {
 		val questions = quiz.getQuestions();
-		return questions.stream().mapToInt(question -> {
-			showQuestion(question);
-			showAnswers(question.getPossibleAnswers());
-			val score = handleUserAnswer(question.getPossibleAnswers());
+		return questions.stream()
+				.mapToInt(
+						question -> {
+							showQuestion(question);
+							showAnswers(question.getPossibleAnswers());
+							val score = handleUserAnswer(question.getPossibleAnswers());
 
-			return score;
-		}).sum();
+							return score;
+						})
+				.sum();
 	}
 
 	private int handleUserAnswer(Collection<Answer> possibleAnswers) {
