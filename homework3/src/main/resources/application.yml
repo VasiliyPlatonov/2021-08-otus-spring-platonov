@@ -1,3 +1,7 @@
 quiz:
   headers: question, a, b, c, d, answer
   required-score: 3
+
+application:
+  title: Quiz App
+  version: 1.0.0
