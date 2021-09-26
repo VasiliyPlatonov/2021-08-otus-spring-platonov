@@ -1,6 +1,7 @@
 package ru.vasiliyplatonov.homework3.config;
 
 import org.apache.commons.csv.CSVFormat;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -16,8 +17,11 @@ import java.util.Scanner;
 @ComponentScan({"ru.vasiliyplatonov.homework3"})
 public class AppConfig {
 
-	public final static String[] HEADERS = {"question", "a", "b", "c", "d", "answer"};
-	public final static int CREDIT_COUNT = 3;
+	@Value("${quiz.headers}")
+	public String[] HEADERS;
+
+	@Value("${quiz.credit-count: 4}")  // default 4
+	public static int REQUIRED_SCORE;
 
 
 	@Bean

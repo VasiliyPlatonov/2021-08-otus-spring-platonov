@@ -11,7 +11,7 @@ import ru.vasiliyplatonov.homework3.service.studentprovider.StudentProvider;
 import java.io.FileReader;
 import java.io.IOException;
 
-import static ru.vasiliyplatonov.homework3.config.AppConfig.CREDIT_COUNT;
+import static ru.vasiliyplatonov.homework3.config.AppConfig.REQUIRED_SCORE;
 
 @Controller("quizController")
 public class QuizControllerImpl implements QuizController {
@@ -53,7 +53,7 @@ public class QuizControllerImpl implements QuizController {
 			student.setScore(score);
 
 			System.out.println("\n\nYour score is " + score);
-			if (score >= CREDIT_COUNT) {
+			if (score >= REQUIRED_SCORE) {
 				System.out.println(" °˖✧◝(⁰▿⁰)◜✧˖° Congratulations you passed the quiz!!!");
 			} else {
 				System.out.println(" (ಡ‸ಡ) We are sorry, but you scored too few points...");
