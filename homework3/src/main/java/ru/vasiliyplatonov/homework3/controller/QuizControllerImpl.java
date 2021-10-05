@@ -8,7 +8,6 @@ import ru.vasiliyplatonov.homework3.service.quizhost.QuizHost;
 import ru.vasiliyplatonov.homework3.service.studentprovider.StudentProvider;
 
 @RequiredArgsConstructor
-
 public class QuizControllerImpl implements QuizController {
 
 	private final QuizFactory quizFactory;
