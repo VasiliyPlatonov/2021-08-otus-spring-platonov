@@ -1,6 +1,6 @@
 target/
 .gradle
-
+/out
 # Compiled class file
 *.class
 
