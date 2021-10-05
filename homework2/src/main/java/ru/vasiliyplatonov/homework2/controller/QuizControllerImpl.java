@@ -3,7 +3,7 @@ package ru.vasiliyplatonov.homework2.controller;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
-import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Component;
 import ru.vasiliyplatonov.homework2.config.AppConfig;
 import ru.vasiliyplatonov.homework2.service.quizfactory.QuizFactory;
 import ru.vasiliyplatonov.homework2.service.quizhost.QuizHost;
@@ -12,7 +12,7 @@ import ru.vasiliyplatonov.homework2.service.studentprovider.StudentProvider;
 import java.io.FileReader;
 import java.io.IOException;
 
-@Controller("quizController")
+@Component("quizController")
 public class QuizControllerImpl implements QuizController {
 
 	private final Resource quizFile;
