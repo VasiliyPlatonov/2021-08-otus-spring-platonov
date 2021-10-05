@@ -5,3 +5,4 @@ quiz:
 application:
   title: Quiz App
   version: 1.0.0
+  language-tag: ru-RU

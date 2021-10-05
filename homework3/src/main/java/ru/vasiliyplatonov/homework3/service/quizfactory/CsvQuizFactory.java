@@ -1,31 +1,29 @@
 package ru.vasiliyplatonov.homework3.service.quizfactory;
 
+import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
-import org.springframework.stereotype.Service;
 import ru.vasiliyplatonov.homework3.domain.Answer;
 import ru.vasiliyplatonov.homework3.domain.Question;
 import ru.vasiliyplatonov.homework3.domain.Quiz;
 
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-@Service("quizFactory")
+@RequiredArgsConstructor
 public class CsvQuizFactory implements QuizFactory {
 
 	private final CSVFormat csvFormat;
-
-	public CsvQuizFactory(CSVFormat csvFormat) {
-		this.csvFormat = csvFormat;
-	}
+	private final File quiz;
 
 	@Override
-	public Quiz create(Reader inQuiz) {
+	public Quiz create() {
 		try {
-			val csvQuizRecords = csvFormat.parse(inQuiz);
+			val csvQuizRecords = csvFormat.parse(new FileReader(quiz));
 			val questions =
 					csvQuizRecords.getRecords().stream()
 							.map(CsvQuizFactory::toQuestion)

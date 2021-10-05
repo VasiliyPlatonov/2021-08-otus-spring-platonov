@@ -5,6 +5,7 @@ import lombok.val;
 import ru.vasiliyplatonov.homework3.domain.Answer;
 import ru.vasiliyplatonov.homework3.domain.Question;
 import ru.vasiliyplatonov.homework3.domain.Quiz;
+import ru.vasiliyplatonov.homework3.service.i18n.LocalizedMessageSource;
 
 import java.util.Collection;
 import java.util.Scanner;
@@ -13,6 +14,7 @@ import java.util.Scanner;
 public class StdInQuizHost implements QuizHost {
 
 	private final Scanner scanner;
+	private final LocalizedMessageSource msgSource;
 
 
 	@Override
@@ -31,7 +33,7 @@ public class StdInQuizHost implements QuizHost {
 	}
 
 	private int handleUserAnswer(Collection<Answer> possibleAnswers) {
-		System.out.print("Enter your answer:");
+		System.out.print(msgSource.getMessage("enter-your-answer") + ": ");
 		val userAnswer = scanner.nextLine();
 
 		val countOfCorrect = (int) (possibleAnswers.stream()
