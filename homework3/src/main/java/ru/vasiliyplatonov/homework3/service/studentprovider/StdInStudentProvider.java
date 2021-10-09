@@ -3,7 +3,7 @@ package ru.vasiliyplatonov.homework3.service.studentprovider;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import ru.vasiliyplatonov.homework3.domain.Student;
-import ru.vasiliyplatonov.homework3.service.i18n.LocalizedMessageSource;
+import ru.vasiliyplatonov.homework3.service.messagesource.LocalizedMessageSource;
 
 import java.util.Scanner;
 

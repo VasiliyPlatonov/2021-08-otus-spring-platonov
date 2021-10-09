@@ -1,4 +1,4 @@
-package ru.vasiliyplatonov.homework3.service.i18n;
+package ru.vasiliyplatonov.homework3.service.messagesource;
 
 import org.springframework.context.MessageSource;
 

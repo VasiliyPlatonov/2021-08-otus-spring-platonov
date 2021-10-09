@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
+import org.springframework.stereotype.Service;
 import ru.vasiliyplatonov.homework3.domain.Answer;
 import ru.vasiliyplatonov.homework3.domain.Question;
 import ru.vasiliyplatonov.homework3.domain.Quiz;
@@ -14,16 +15,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
+@Service("quizFactory")
 @RequiredArgsConstructor
 public class CsvQuizFactory implements QuizFactory {
 
 	private final CSVFormat csvFormat;
-	private final File quiz;
 
 	@Override
-	public Quiz create() {
+	public Quiz create(File quizFile) {
 		try {
-			val csvQuizRecords = csvFormat.parse(new FileReader(quiz));
+			val csvQuizRecords = csvFormat.parse(new FileReader(quizFile));
 			val questions =
 					csvQuizRecords.getRecords().stream()
 							.map(CsvQuizFactory::toQuestion)

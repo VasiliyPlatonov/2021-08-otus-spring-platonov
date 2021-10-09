@@ -5,7 +5,7 @@ import lombok.val;
 import ru.vasiliyplatonov.homework3.domain.Answer;
 import ru.vasiliyplatonov.homework3.domain.Question;
 import ru.vasiliyplatonov.homework3.domain.Quiz;
-import ru.vasiliyplatonov.homework3.service.i18n.LocalizedMessageSource;
+import ru.vasiliyplatonov.homework3.service.messagesource.LocalizedMessageSource;
 
 import java.util.Collection;
 import java.util.Scanner;

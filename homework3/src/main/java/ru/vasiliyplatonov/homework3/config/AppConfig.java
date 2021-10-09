@@ -7,20 +7,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
-import org.springframework.core.io.ClassPathResource;
-import ru.vasiliyplatonov.homework3.controller.QuizController;
-import ru.vasiliyplatonov.homework3.controller.QuizControllerImpl;
-import ru.vasiliyplatonov.homework3.service.i18n.LocalizedMessageSource;
-import ru.vasiliyplatonov.homework3.service.i18n.LocalizedMessageSourceImpl;
-import ru.vasiliyplatonov.homework3.service.quizfactory.CsvQuizFactory;
-import ru.vasiliyplatonov.homework3.service.quizfactory.QuizFactory;
+import ru.vasiliyplatonov.homework3.service.messagesource.LocalizedMessageSource;
+import ru.vasiliyplatonov.homework3.service.messagesource.LocalizedMessageSourceImpl;
 import ru.vasiliyplatonov.homework3.service.quizhost.QuizHost;
 import ru.vasiliyplatonov.homework3.service.quizhost.StdInQuizHost;
 import ru.vasiliyplatonov.homework3.service.studentprovider.StdInStudentProvider;
 import ru.vasiliyplatonov.homework3.service.studentprovider.StudentProvider;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Locale;
 import java.util.Scanner;
 
@@ -34,9 +27,6 @@ public class AppConfig {
 
 	@Value("${application.language-tag}")
 	private String languageTag;
-
-	@Value("${quiz.required-score:4}")
-	private int requiredScore;
 
 
 	@Bean
@@ -71,27 +61,5 @@ public class AppConfig {
 		return CSVFormat.DEFAULT
 				.withFirstRecordAsHeader()
 				.withHeader(headers);
-	}
-
-	@Bean
-	public QuizFactory quizFactory() throws IOException {
-		return new CsvQuizFactory(csvFormat(), getQuizFile());
-	}
-
-	@Bean
-	public QuizController quizController() throws IOException {
-		val quizFactory = quizFactory();
-		val studentProvider = studentProvider();
-		val quizHost = quizHost();
-		val localizedMsgSource = localizedMessageSource();
-
-		return new QuizControllerImpl(quizFactory, studentProvider, quizHost, localizedMsgSource, requiredScore);
-	}
-
-	private File getQuizFile() throws IOException {
-		if ("ru-RU".equals(languageTag)) {
-			return new ClassPathResource("quiz/quiz1_ru.csv").getFile();
-		}
-		return new ClassPathResource("quiz/quiz1.csv").getFile();
 	}
 }

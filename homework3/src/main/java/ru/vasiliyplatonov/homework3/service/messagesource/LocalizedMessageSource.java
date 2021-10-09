@@ -1,4 +1,4 @@
-package ru.vasiliyplatonov.homework3.service.i18n;
+package ru.vasiliyplatonov.homework3.service.messagesource;
 
 public interface LocalizedMessageSource {
 	String getMessage(String code);
