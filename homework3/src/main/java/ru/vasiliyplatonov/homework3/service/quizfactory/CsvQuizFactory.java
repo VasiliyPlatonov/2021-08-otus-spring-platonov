@@ -1,9 +1,9 @@
 package ru.vasiliyplatonov.homework3.service.quizfactory;
 
-import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.vasiliyplatonov.homework3.domain.Answer;
 import ru.vasiliyplatonov.homework3.domain.Question;
@@ -16,10 +16,17 @@ import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 @Service("quizFactory")
-@RequiredArgsConstructor
 public class CsvQuizFactory implements QuizFactory {
 
 	private final CSVFormat csvFormat;
+
+	private static final String[] HEADERS = {"question", "a", "b", "c", "d", "answer"};
+
+	public CsvQuizFactory(@Value("#{T(org.apache.commons.csv.CSVFormat).DEFAULT}") CSVFormat csvFormat) {
+		this.csvFormat = csvFormat
+				.withFirstRecordAsHeader()
+				.withHeader(HEADERS);
+	}
 
 	@Override
 	public Quiz create(File quizFile) {

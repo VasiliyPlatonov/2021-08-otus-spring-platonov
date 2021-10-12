@@ -2,18 +2,20 @@ package ru.vasiliyplatonov.homework3.service.quizhost;
 
 import lombok.RequiredArgsConstructor;
 import lombok.val;
+import org.springframework.stereotype.Service;
 import ru.vasiliyplatonov.homework3.domain.Answer;
 import ru.vasiliyplatonov.homework3.domain.Question;
 import ru.vasiliyplatonov.homework3.domain.Quiz;
+import ru.vasiliyplatonov.homework3.service.ioservice.IOService;
 import ru.vasiliyplatonov.homework3.service.messagesource.LocalizedMessageSource;
 
 import java.util.Collection;
-import java.util.Scanner;
 
+@Service
 @RequiredArgsConstructor
-public class StdInQuizHost implements QuizHost {
+public class QuizHostImpl implements QuizHost {
 
-	private final Scanner scanner;
+	private final IOService ioService;
 	private final LocalizedMessageSource msgSource;
 
 
@@ -33,8 +35,8 @@ public class StdInQuizHost implements QuizHost {
 	}
 
 	private int handleUserAnswer(Collection<Answer> possibleAnswers) {
-		System.out.print(msgSource.getMessage("enter-your-answer") + ": ");
-		val userAnswer = scanner.nextLine();
+		ioService.out(msgSource.getMessage("enter-your-answer") + ": ");
+		val userAnswer = ioService.readLine();
 
 		val countOfCorrect = (int) (possibleAnswers.stream()
 				.filter(answer -> answer.getName().equalsIgnoreCase(userAnswer) &&
@@ -44,11 +46,13 @@ public class StdInQuizHost implements QuizHost {
 		return countOfCorrect;
 	}
 
-	private void showAnswers(Collection<Answer> possibleAnswers) {
-		possibleAnswers.forEach(System.out::println);
+	private void showAnswers(Collection<Answer> possibleAnswers)
+	{
+		possibleAnswers.forEach(answer -> ioService.outLine(answer.toString()));
 	}
 
-	private void showQuestion(Question question) {
-		System.out.println("\n" + question.getTitle());
+	private void showQuestion(Question question)
+	{
+		ioService.outLine(System.lineSeparator() + question.getTitle());
 	}
 }
