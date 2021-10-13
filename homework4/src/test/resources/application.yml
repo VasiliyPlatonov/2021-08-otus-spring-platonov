@@ -1,0 +1,18 @@
+quiz:
+  required-score: 3
+
+application:
+  title: Quiz App
+  version: 1.0.0
+  language-tag:
+
+spring:
+  messages:
+    encoding: UTF-8
+    basename: i18n/messages
+    use-code-as-default-message: true
+
+  shell:
+    interactive:
+      enabled: false
+

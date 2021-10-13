@@ -12,7 +12,7 @@ public class ClassPathLocalizedQuizFileProvider implements QuizFileProvider {
 
 	private final String languageTag;
 
-	public ClassPathLocalizedQuizFileProvider(@Value("${application.language-tag}") String languageTag) {
+	public ClassPathLocalizedQuizFileProvider(@Value("${application.language-tag:}") String languageTag) {
 		this.languageTag = languageTag;
 	}
 
