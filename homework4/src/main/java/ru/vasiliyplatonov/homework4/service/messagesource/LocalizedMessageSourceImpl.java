@@ -1,4 +1,4 @@
-package ru.vasiliyplatonov.homework3.service.messagesource;
+package ru.vasiliyplatonov.homework4.service.messagesource;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;

@@ -1,4 +1,4 @@
-package ru.vasiliyplatonov.homework3.service.quizfileprovider;
+package ru.vasiliyplatonov.homework4.service.quizfileprovider;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;

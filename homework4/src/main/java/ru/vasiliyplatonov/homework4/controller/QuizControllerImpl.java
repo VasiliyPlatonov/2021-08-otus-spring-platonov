@@ -1,13 +1,13 @@
-package ru.vasiliyplatonov.homework3.controller;
+package ru.vasiliyplatonov.homework4.controller;
 
 import lombok.val;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import ru.vasiliyplatonov.homework3.service.messagesource.LocalizedMessageSource;
-import ru.vasiliyplatonov.homework3.service.quizfactory.QuizFactory;
-import ru.vasiliyplatonov.homework3.service.quizfileprovider.QuizFileProvider;
-import ru.vasiliyplatonov.homework3.service.quizhost.QuizHost;
-import ru.vasiliyplatonov.homework3.service.studentprovider.StudentProvider;
+import ru.vasiliyplatonov.homework4.service.messagesource.LocalizedMessageSource;
+import ru.vasiliyplatonov.homework4.service.quizfactory.QuizFactory;
+import ru.vasiliyplatonov.homework4.service.quizfileprovider.QuizFileProvider;
+import ru.vasiliyplatonov.homework4.service.quizhost.QuizHost;
+import ru.vasiliyplatonov.homework4.service.studentprovider.StudentProvider;
 
 @Component("quizController")
 public class QuizControllerImpl implements QuizController {
@@ -24,7 +24,7 @@ public class QuizControllerImpl implements QuizController {
 							  QuizFileProvider quizFileProvider,
 							  QuizHost quizHost,
 							  LocalizedMessageSource msgSource,
-							  @Value("${quiz.required-score:4}") int requiredScore) {
+							  @Value("${quiz.required-score}") int requiredScore) {
 		this.quizFactory = quizFactory;
 		this.studentProvider = studentProvider;
 		this.quizFileProvider = quizFileProvider;
@@ -60,23 +60,3 @@ public class QuizControllerImpl implements QuizController {
 		}
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
