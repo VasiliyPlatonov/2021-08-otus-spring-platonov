@@ -12,7 +12,7 @@ public final class LocalizedMessageSourceImpl implements LocalizedMessageSource 
 	private final Locale locale;
 	private final MessageSource messageSource;
 
-	public LocalizedMessageSourceImpl(@Value("${application.language-tag}") String languageTag, MessageSource messageSource) {
+	public LocalizedMessageSourceImpl(@Value("${application.language-tag:}") String languageTag, MessageSource messageSource) {
 		this.locale = Locale.forLanguageTag(languageTag);
 		this.messageSource = messageSource;
 	}

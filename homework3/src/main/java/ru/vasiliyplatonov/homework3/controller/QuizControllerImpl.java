@@ -24,7 +24,7 @@ public class QuizControllerImpl implements QuizController {
 							  QuizFileProvider quizFileProvider,
 							  QuizHost quizHost,
 							  LocalizedMessageSource msgSource,
-							  @Value("${quiz.required-score}") int requiredScore) {
+							  @Value("${quiz.required-score:4}") int requiredScore) {
 		this.quizFactory = quizFactory;
 		this.studentProvider = studentProvider;
 		this.quizFileProvider = quizFileProvider;
