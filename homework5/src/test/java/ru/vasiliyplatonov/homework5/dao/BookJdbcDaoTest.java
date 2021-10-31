@@ -37,6 +37,58 @@ class BookJdbcDaoTest {
 		assertThat(actualBook).usingRecursiveComparison().isEqualTo(expectedBook);
 	}
 
+	@Test
+	@DisplayName("should return expected books by their genre")
+	void shouldReturnExpectedBooksByGenre() {
+		val expectedGenre = new Genre(4, "poem");
+
+		val expectedBooks = List.of(
+				new Book(4, "Demon", new Author(2, "Mikhail", "Lermontov"), expectedGenre)
+		);
+
+		val actualBooks = bookDao.getByGenre(expectedGenre);
+
+		assertThat(actualBooks)
+				.usingFieldByFieldElementComparator()
+				.isEqualTo(expectedBooks);
+	}
+
+	@Test
+	@DisplayName("should return expected books by their author")
+	void shouldReturnExpectedBooksByAuthor() {
+		val expectedAuthor = new Author(2, "Mikhail", "Lermontov");
+
+
+		val expectedBooks = List.of(
+				new Book(3, "A Hero of Our Time", expectedAuthor, new Genre(3, "psychological fiction")),
+				new Book(4, "Demon", expectedAuthor, new Genre(4, "poem"))
+		);
+
+		val actualBooks = bookDao.getByAuthor(expectedAuthor);
+
+		assertThat(actualBooks)
+				.usingFieldByFieldElementComparator()
+				.isEqualTo(expectedBooks);
+	}
+
+	@Test
+	@DisplayName("should return expected books by their title")
+	void shouldReturnExpectedBooksById() {
+		val expectedTitle = "Demon";
+		val expectedAuthor = new Author(2, "Mikhail", "Lermontov");
+		val expectedGenre = new Genre(4, "poem");
+
+		val expectedBooks = List.of(
+				new Book(4, "Demon", expectedAuthor, expectedGenre)
+		);
+
+		val actualBooks = bookDao.getByTitle(expectedTitle);
+
+		assertThat(actualBooks)
+				.usingFieldByFieldElementComparator()
+				.isEqualTo(expectedBooks);
+	}
+
 
 	@Test
 	@DisplayName("should return all expected books")

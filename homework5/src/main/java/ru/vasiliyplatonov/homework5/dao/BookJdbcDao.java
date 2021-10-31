@@ -58,6 +58,59 @@ public class BookJdbcDao implements BookDao {
 	}
 
 	@Override
+	public List<Book> getByTitle(String title) {
+		val params = Map.of("title", title);
+
+		return jdbc.query("select " +
+				"b.id as book_id," +
+				"b.title as title," +
+				"a.id as author_id," +
+				"first_name as author_first_name," +
+				"last_name as author_last_name," +
+				"g.id as genre_id, " +
+				"g.name as genre_name " +
+				"from books b " +
+				"inner join authors a on b.author_id = a.id " +
+				"inner join genres g on b.genre_id = g.id " +
+				"where b.title = :title", params, new BookMapper());
+	}
+
+	@Override
+	public List<Book> getByAuthor(Author author) {
+		val params = Map.of("authorId", author.getId());
+		return jdbc.query("select " +
+				"b.id as book_id," +
+				"b.title as title," +
+				"a.id as author_id," +
+				"first_name as author_first_name," +
+				"last_name as author_last_name," +
+				"g.id as genre_id, " +
+				"g.name as genre_name " +
+				"from books b " +
+				"inner join authors a on b.author_id = a.id " +
+				"inner join genres g on b.genre_id = g.id " +
+				"where b.author_id = :authorId", params, new BookMapper());
+	}
+
+	@Override
+	public List<Book> getByGenre(Genre genre) {
+		val params = Map.of("genreId", genre.getId());
+
+		return jdbc.query("select " +
+				"b.id as book_id," +
+				"b.title as title," +
+				"a.id as author_id," +
+				"first_name as author_first_name," +
+				"last_name as author_last_name," +
+				"g.id as genre_id, " +
+				"g.name as genre_name " +
+				"from books b " +
+				"inner join authors a on b.author_id = a.id " +
+				"inner join genres g on b.genre_id = g.id " +
+				"where b.genre_id = :genreId", params, new BookMapper());
+	}
+
+	@Override
 	public long add(Book book) {
 		val params = new MapSqlParameterSource();
 		params.addValue("title", book.getTitle());
