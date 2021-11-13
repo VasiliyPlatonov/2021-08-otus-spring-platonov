@@ -26,5 +26,6 @@ CREATE TABLE books
         ON UPDATE CASCADE,
     FOREIGN KEY (genre_id) REFERENCES genres (id)
         ON DELETE CASCADE
-        ON UPDATE CASCADE
+        ON UPDATE CASCADE,
+    CONSTRAINT unique_book UNIQUE (title, author_id)
 );
