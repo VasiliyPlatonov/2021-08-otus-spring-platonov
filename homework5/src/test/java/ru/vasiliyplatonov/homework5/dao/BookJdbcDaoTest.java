@@ -72,6 +72,22 @@ class BookJdbcDaoTest {
 	}
 
 	@Test
+	@DisplayName("should return expected books by their author")
+	void shouldReturnExpectedBooksByGenreName() {
+		val expectedGenre = new Genre(4, "poem");
+
+		val expectedBooks = List.of(
+				new Book(4, "Demon", new Author(2, "Mikhail", "Lermontov"), expectedGenre)
+		);
+
+		val actualBooks = bookDao.getByGenreName(expectedGenre.getName());
+
+		assertThat(actualBooks)
+				.usingFieldByFieldElementComparator()
+				.isEqualTo(expectedBooks);
+	}
+
+	@Test
 	@DisplayName("should return expected books by their title")
 	void shouldReturnExpectedBooksById() {
 		val expectedTitle = "Demon";
@@ -141,6 +157,34 @@ class BookJdbcDaoTest {
 
 		assertThatThrownBy(() -> bookDao.getById(existingBookId))
 				.isInstanceOf(EmptyResultDataAccessException.class);
+	}
+
+	@Test
+	@DisplayName("should correct delete book from DB by title")
+	void shouldCorrectDeleteBookByTitle() {
+		val existingBookTitle = "Demon";
+		bookDao.deleteByTitle(existingBookTitle);
+
+		assertThat(bookDao.getByTitle(existingBookTitle)).isEmpty();
+	}
+
+	@Test
+	@DisplayName("should correct delete list of books")
+	void shouldCorrectDeleteListOfBooks() {
+		val existingBooks = bookDao.getAll();
+		bookDao.delete(existingBooks);
+
+		assertThat(bookDao.getAll()).isEmpty();
+	}
+
+	@Test
+	@DisplayName("should correct delete books by author")
+	void shouldCorrectDeleteBooksByAuthor() {
+		val existingAuthor = new Author(1, "Stephen", "King");
+
+		assertThat(bookDao.getByAuthor(existingAuthor)).isNotEmpty();
+		bookDao.deleteByAuthor(existingAuthor);
+		assertThat(bookDao.getByAuthor(existingAuthor)).isEmpty();
 	}
 
 

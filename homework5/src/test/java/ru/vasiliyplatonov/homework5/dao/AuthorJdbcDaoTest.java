@@ -37,6 +37,40 @@ class AuthorJdbcDaoTest {
 	}
 
 	@Test
+	@DisplayName("should return correct author existing by id")
+	void shouldReturnCorrectAuthorExistingById() {
+		val existingId = 1;
+		val notExistingId = 1200;
+		val expectedTrueResult = authorDao.existsById(existingId);
+		val expectedFalseResult = authorDao.existsById(notExistingId);
+
+		assertThat(expectedTrueResult).isTrue();
+		assertThat(expectedFalseResult).isFalse();
+	}
+
+	@Test
+	@DisplayName("should return correct author existing by id")
+	void shouldReturnCorrectAuthorExistingByFirstNameAndLastName() {
+		val expectedTrueResult = authorDao.existsByFirstNameAndLastName("Stephen", "King");
+		assertThat(expectedTrueResult).isTrue();
+	}
+
+
+	@Test
+	@DisplayName("should return expected author by his first and last name")
+	void shouldReturnExpectedAuthorByFirstNameAndLastName() {
+		val existingId = 1;
+		val expectedAuthor = new Author(existingId, "Stephen", "King");
+		val actualAuthor = authorDao.getByFirstNameAndLastName(
+				expectedAuthor.getFirstName(),
+				expectedAuthor.getLastName());
+
+		assertThat(actualAuthor)
+				.usingRecursiveComparison()
+				.isEqualTo(expectedAuthor);
+	}
+
+	@Test
 	@DisplayName("should return all expected authors")
 	void shouldReturnAllExpectedAuthors() {
 		val expectedAuthors = List.of(
@@ -94,6 +128,6 @@ class AuthorJdbcDaoTest {
 		assertThat(updatedAuthor)
 				.usingRecursiveComparison()
 				.isNotEqualTo(notUpdatedAuthor)
-				.isEqualTo(expectedAuthor );
+				.isEqualTo(expectedAuthor);
 	}
 }

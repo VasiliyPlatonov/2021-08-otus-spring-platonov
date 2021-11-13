@@ -17,10 +17,21 @@ public interface BookDao {
 
 	List<Book> getByGenre(Genre genre);
 
-
 	long add(Book book);
 
 	void deleteById(long id);
 
+	void deleteByAuthor(Author author);
+
+	void delete(List<Book> books);
+
+	void delete(Book book);
+
+	void deleteByTitle(String title);
+
 	void update(Book book);
+
+	List<Book> getByGenreName(String genreName);
+
+	List<Book> getByAuthorFirstNameAndLastName(String firstName, String lastName);
 }

@@ -20,10 +20,44 @@ public class AuthorJdbcDao implements AuthorDao {
 
 	private final NamedParameterJdbcOperations jdbc;
 
+
+	@Override
+	public boolean existsById(long id) {
+		val params = Map.of("id", id);
+		return Boolean.TRUE.equals(
+				jdbc.query("select 1 from authors where id = :id", params, ResultSet::next)
+		);
+	}
+
+	@Override
+	public boolean existsByFirstNameAndLastName(String firstName, String lastName) {
+		val params = new MapSqlParameterSource();
+		params.addValue("firstName", firstName);
+		params.addValue("lastName", lastName);
+
+		return Boolean.TRUE.equals(
+				jdbc.query("select 1 from authors" +
+								" where first_name = :firstName and last_name = :lastName",
+						params, ResultSet::next));
+	}
+
 	@Override
 	public Author getById(long id) {
 		val params = Map.of("id", id);
-		return jdbc.queryForObject("select * from authors where id = :id", params, new AuthorMapper());
+		return jdbc.queryForObject("select id, first_name, last_name from authors where id = :id", params, new AuthorMapper());
+	}
+
+	@Override
+	public Author getByFirstNameAndLastName(String firstName, String lastName) {
+		val params = new MapSqlParameterSource();
+		params.addValue("firstName", firstName);
+		params.addValue("lastName", lastName);
+
+		return jdbc.queryForObject(
+				"select id, first_name, last_name" +
+						" from authors" +
+						" where first_name = :firstName and last_name = :lastName",
+				params, new AuthorMapper());
 	}
 
 	@Override

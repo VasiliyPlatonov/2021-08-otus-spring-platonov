@@ -5,6 +5,7 @@ import lombok.val;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
+import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.vasiliyplatonov.homework5.domain.Author;
@@ -93,6 +94,25 @@ public class BookJdbcDao implements BookDao {
 	}
 
 	@Override
+	public List<Book> getByAuthorFirstNameAndLastName(String firstName, String lastName) {
+		val params = Map.of("firstName", firstName, "lastName", lastName);
+
+		return jdbc.query("select " +
+						"b.id as book_id," +
+						"b.title as title," +
+						"a.id as author_id," +
+						"first_name as author_first_name," +
+						"last_name as author_last_name," +
+						"g.id as genre_id, " +
+						"g.name as genre_name " +
+						"from books b " +
+						"inner join authors a on b.author_id = a.id " +
+						"inner join genres g on b.genre_id = g.id " +
+						"where a.first_name = :firstName and a.last_name = :lastName",
+				params, new BookMapper());
+	}
+
+	@Override
 	public List<Book> getByGenre(Genre genre) {
 		val params = Map.of("genreId", genre.getId());
 
@@ -108,6 +128,26 @@ public class BookJdbcDao implements BookDao {
 				"inner join authors a on b.author_id = a.id " +
 				"inner join genres g on b.genre_id = g.id " +
 				"where b.genre_id = :genreId", params, new BookMapper());
+	}
+
+	@Override
+	public List<Book> getByGenreName(String genreName) {
+		val params = Map.of("genreName", genreName);
+
+		return jdbc.query("select " +
+						"b.id as book_id," +
+						"b.title as title," +
+						"a.id as author_id," +
+						"first_name as author_first_name," +
+						"last_name as author_last_name," +
+						"g.id as genre_id, " +
+						"g.name as genre_name " +
+						"from books b " +
+						"inner join authors a on b.author_id = a.id " +
+						"inner join genres g on b.genre_id = g.id " +
+						"where g.name = :genreName",
+
+				params, new BookMapper());
 	}
 
 	@Override
@@ -127,6 +167,30 @@ public class BookJdbcDao implements BookDao {
 	@Override
 	public void deleteById(long id) {
 		jdbc.update("delete from books where id = :id", Map.of("id", id));
+	}
+
+	@Override
+	public void delete(Book book) {
+		this.deleteById(book.getId());
+	}
+
+	@Override
+	public void delete(List<Book> books) {
+		val params = SqlParameterSourceUtils.createBatch(books);
+		jdbc.batchUpdate("delete from books where id = :id", params);
+	}
+
+	@Override
+	public void deleteByTitle(String title) {
+		jdbc.update("delete from books where title= :title", Map.of("title", title));
+	}
+
+	@Override
+	public void deleteByAuthor(Author author) {
+		jdbc.update(
+				"delete from books where author_id = :author_id",
+				Map.of("author_id", author.getId())
+		);
 	}
 
 	@Override

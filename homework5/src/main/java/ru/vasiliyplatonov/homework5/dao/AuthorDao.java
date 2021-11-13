@@ -5,7 +5,14 @@ import ru.vasiliyplatonov.homework5.domain.Author;
 import java.util.List;
 
 public interface AuthorDao {
+
+	boolean existsById(long id);
+
+	boolean existsByFirstNameAndLastName(String firstName, String lastName);
+
 	Author getById(long id);
+
+	Author getByFirstNameAndLastName(String firstName, String lastName);
 
 	List<Author> getAll();
 

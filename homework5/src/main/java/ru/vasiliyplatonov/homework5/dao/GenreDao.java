@@ -6,7 +6,13 @@ import java.util.List;
 
 public interface GenreDao {
 
+	boolean existsByName(String name);
+
+	boolean existsById(long id);
+
 	Genre getById(long id);
+
+	Genre getByName(String name);
 
 	List<Genre> getAll();
 

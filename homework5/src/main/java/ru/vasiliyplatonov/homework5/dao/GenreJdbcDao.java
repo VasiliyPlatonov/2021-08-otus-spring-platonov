@@ -18,55 +18,84 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class GenreJdbcDao implements GenreDao {
 
-	private final NamedParameterJdbcOperations jdbc;
+    private final NamedParameterJdbcOperations jdbc;
 
 
-	@Override
-	public Genre getById(long id) {
-		val params = Map.of("id", id);
-		return jdbc.queryForObject("select * from genres where id = :id", params, new GenreMapper());
-	}
+    @Override
+    public boolean existsById(long id) {
+        return Boolean.TRUE.equals(
+                jdbc.query(
+                        "select 1 from genres where id = :id",
+                        Map.of("id", id),
+                        ResultSet::next
+                ));
+    }
 
-	@Override
-	public List<Genre> getAll() {
-		return jdbc.query("select * from genres", new GenreMapper());
-	}
+    @Override
+    public boolean existsByName(String name) {
+        return Boolean.TRUE.equals(
+                jdbc.query(
+                        "select 1 from genres where name = :name",
+                        Map.of("name", name),
+                        ResultSet::next
+                ));
+    }
 
-	@Override
-	public long add(Genre genre) {
-		val params = new MapSqlParameterSource();
-		params.addValue("name", genre.getName());
-		val keyHolder = new GeneratedKeyHolder();
+    @Override
+    public Genre getById(long id) {
+        return jdbc.queryForObject(
+                "select id, name from genres where id = :id",
+                Map.of("id", id),
+                new GenreMapper());
+    }
 
-		jdbc.update("insert into genres (name) values (:name)", params, keyHolder);
+    @Override
+    public Genre getByName(String name) {
+        return jdbc.queryForObject(
+                "select id, name from genres where name = :name",
+                Map.of("name", name),
+                new GenreMapper());
+    }
 
-		return keyHolder.getKey().longValue();
-	}
+    @Override
+    public List<Genre> getAll() {
+        return jdbc.query("select id, name from genres", new GenreMapper());
+    }
 
-	@Override
-	public void deleteById(long id) {
-		val params = Map.of("id", id);
-		jdbc.update("delete from genres where id = :id", params);
-	}
+    @Override
+    public long add(Genre genre) {
+        val params = new MapSqlParameterSource();
+        params.addValue("name", genre.getName());
+        val keyHolder = new GeneratedKeyHolder();
 
-	@Override
-	public void update(Genre genre) {
-		val params = new MapSqlParameterSource();
-		params.addValue("id", genre.getId());
-		params.addValue("name", genre.getName());
+        jdbc.update("insert into genres (name) values (:name)", params, keyHolder);
 
-		jdbc.update("update genres set name = :name where id = :id", params);
-	}
+        return keyHolder.getKey().longValue();
+    }
+
+    @Override
+    public void deleteById(long id) {
+        val params = Map.of("id", id);
+        jdbc.update("delete from genres where id = :id", params);
+    }
+
+    @Override
+    public void update(Genre genre) {
+        val params = new MapSqlParameterSource();
+        params.addValue("id", genre.getId());
+        params.addValue("name", genre.getName());
+
+        jdbc.update("update genres set name = :name where id = :id", params);
+    }
 
 
+    private static final class GenreMapper implements RowMapper<Genre> {
 
-	private static final class GenreMapper implements RowMapper<Genre> {
-
-		@Override
-		public Genre mapRow(ResultSet rs, int rowNum) throws SQLException {
-			val id = rs.getLong("id");
-			val name = rs.getString("name");
-			return new Genre(id, name);
-		}
-	}
+        @Override
+        public Genre mapRow(ResultSet rs, int rowNum) throws SQLException {
+            val id = rs.getLong("id");
+            val name = rs.getString("name");
+            return new Genre(id, name);
+        }
+    }
 }
