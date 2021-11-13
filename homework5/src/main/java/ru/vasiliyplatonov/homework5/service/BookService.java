@@ -18,14 +18,18 @@ public interface BookService {
 
 	List<Book> getByAuthor(Author author);
 
-	List<Book> getByAuthor(String author);
+	List<Book> getByAuthorFirstNameAndLastName(String firstName, String lastName);
 
 	List<Book> getByGenre(Genre genre);
 
-	List<Book> getByGenre(String genre);
+	List<Book> getByGenreName(String genreName);
 
-	void update(Book book);
+	void update(long bookId, String title, String authorFirstName, String authorLastName, String genreName);
 
 	void deleteById(long id);
+
+	void deleteByTitle(String title);
+
+	void deleteByAuthor(Author author);
 
 }
