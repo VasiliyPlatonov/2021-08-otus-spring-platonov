@@ -22,9 +22,9 @@ public class ApplicationCommands {
 	private final TableRenderer<Book> bookTableRenderer;
 
 
-	@ShellMethod(value = "Show all books", key = {"book show"}, group = "book", prefix = "-")
-	public String showAllBooks(@ShellOption(help = "Possible values are: '-id', '-genre', '-author'", defaultValue = "all") String filterName,
-	                           @ShellOption(defaultValue = "") String filterValue) {
+	@ShellMethod(value = "Show book", key = {"book show"}, group = "book", prefix = "-")
+	public String showBook(@ShellOption(help = "Possible values are: '-id', '-genre', '-author'", defaultValue = "all") String filterName,
+	                       @ShellOption(defaultValue = "") String filterValue) {
 
 		switch (filterName) {
 			case "all": {
@@ -41,20 +41,14 @@ public class ApplicationCommands {
 			}
 			case "-author": {
 				val fullNameArr = filterValue.split(" ");
-				val firstName = fullNameArr[0];
-				val lastName = fullNameArr[1];
-
 				return bookTableRenderer.render(
-						bookService.getByAuthorFirstNameAndLastName(firstName, lastName));
+						bookService.getByAuthorFirstNameAndLastName(fullNameArr[0], fullNameArr[1]));
 			}
 			default:
 				return "Unsupported.\nUsing: book show [-id|-genre|-author <filterValue>]";
 		}
 	}
 
-	/**
-	 * Using: book add -title "The Playbook" -a-name "Barny" -a-surname "Stinson" -genre "tutorial"
-	 */
 	@ShellMethod(value = "Add book", key = {"book add"}, group = "book", prefix = "-")
 	public String addBook(@NotBlank @ShellOption(value = {"-t", "-title"}, defaultValue = "") String title,
 	                      @NotBlank @ShellOption(value = {"-a-name", "-author-firstname"}, defaultValue = "") String authorFirstName,
@@ -94,10 +88,7 @@ public class ApplicationCommands {
 
 			case "-author": {
 				val fullNameArr = filterValue.split(" ");
-				val firstName = fullNameArr[0];
-				val lastName = fullNameArr[1];
-
-				bookService.deleteByAuthor(new Author(0, firstName, lastName));
+				bookService.deleteByAuthor(new Author(0, fullNameArr[0], fullNameArr[1]));
 			}
 			break;
 
