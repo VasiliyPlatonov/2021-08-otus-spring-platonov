@@ -7,10 +7,3 @@ spring:
       mode: embedded
       data-locations: sql/data.sql
       schema-locations: sql/schema.sql
-
-  #todo: ???? ??? ??? ??? ????
-  h2:
-    console:
-      path: /h2-console
-      settings:
-        web-allow-others: true

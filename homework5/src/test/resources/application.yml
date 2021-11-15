@@ -6,3 +6,4 @@ spring:
     init:
       mode: embedded
       data-locations: data.sql
+      schema-locations: sql/schema.sql
