@@ -6,18 +6,18 @@ spring:
     init:
       data-locations: sql/data.sql
       schema-locations: sql/schema.sql
-      mode: embedded
+      mode: always
 
   jpa:
-    show-sql: true
+    show-sql: false
 
     properties:
       hibernate:
-        format_sql: true
+        format_sql: false
 
     hibernate:
       ddl-auto: validate
 
-  h2:
-    console:
-      enabled: true
+  shell:
+    interactive:
+      enabled: false

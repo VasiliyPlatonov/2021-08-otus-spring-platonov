@@ -1,6 +1,8 @@
 DROP TABLE IF EXISTS books;
 DROP TABLE IF EXISTS genres;
 DROP TABLE IF EXISTS authors;
+DROP TABLE IF EXISTS books_authors;
+DROP TABLE IF EXISTS books_genres;
 
 CREATE TABLE genres
 (
@@ -15,21 +17,21 @@ CREATE TABLE authors
     last_name  VARCHAR(255)
 );
 
+--     todo: что делать с таблицей books_authors если из этой таблицы удаляется книга?
 CREATE TABLE books
 (
-    id        IDENTITY     NOT NULL PRIMARY KEY,
-    title     VARCHAR(255) NOT NULL,
-    author_id BIGINT       NOT NULL,
-    genre_id  BIGINT       NOT NULL,
-    FOREIGN KEY (author_id) REFERENCES authors (id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE,
-    FOREIGN KEY (genre_id) REFERENCES genres (id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE,
-    CONSTRAINT unique_book UNIQUE (title, author_id)
+    id    IDENTITY     NOT NULL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL
+--     FOREIGN KEY (author_id) REFERENCES authors (id)
+--         ON DELETE CASCADE
+--         ON UPDATE CASCADE,
+--     FOREIGN KEY (genre_id) REFERENCES genres (id)
+--         ON DELETE CASCADE
+--         ON UPDATE CASCADE,
+--     CONSTRAINT unique_book UNIQUE (title, author_id)
 );
 
+--     todo: как обеспечить уникальность (название книги && авторы)?
 CREATE TABLE books_authors
 (
     book_id   BIGINT NOT NULL,
