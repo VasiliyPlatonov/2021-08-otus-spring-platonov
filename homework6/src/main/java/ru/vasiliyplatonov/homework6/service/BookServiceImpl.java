@@ -30,7 +30,10 @@ public class BookServiceImpl implements BookService {
 
 	@Override
 	public Book getById(long id) {
-		return null;
+		final var book = bookRepository.getById(id);
+
+		return book.orElse(null);
+
 	}
 
 	@Override
@@ -55,7 +58,7 @@ public class BookServiceImpl implements BookService {
 
 	@Override
 	public List<Book> getByGenre(Genre genre) {
-		return null;
+		return bookRepository.getByGenre(genre);
 	}
 
 	@Override

@@ -5,9 +5,10 @@ import ru.vasiliyplatonov.homework6.domain.Book;
 import ru.vasiliyplatonov.homework6.domain.Genre;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface BookRepository {
-	Book getById(long id);
+	Optional<Book> getById(long id);
 
 	List<Book> getAll();
 

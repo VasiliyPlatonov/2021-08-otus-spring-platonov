@@ -9,6 +9,7 @@ import ru.vasiliyplatonov.homework6.domain.Genre;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -18,18 +19,14 @@ public class BookRepositoryJpa implements BookRepository {
 	private final EntityManager em;
 
 	@Override
-	public Book getById(long id) {
-		return null;
+	public Optional<Book> getById(long id) {
+		return Optional.of(em.find(Book.class, id));
 	}
 
 	@Override
 	public List<Book> getAll() {
-
 		return em
-				.createQuery(
-						"select b " +
-								"from Book b join fetch b.authors",
-						Book.class)
+				.createQuery("select b from Book b join fetch b.authors", Book.class)
 				.getResultList();
 	}
 
@@ -45,7 +42,10 @@ public class BookRepositoryJpa implements BookRepository {
 
 	@Override
 	public List<Book> getByGenre(Genre genre) {
-		return null;
+		return em
+				.createQuery("select b from Book b where :genre member of b.genres", Book.class)
+				.setParameter("genre", genre)
+				.getResultList();
 	}
 
 	@Override
