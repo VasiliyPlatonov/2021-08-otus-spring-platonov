@@ -1,7 +1,9 @@
 package ru.vasiliyplatonov.homework6.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -10,6 +12,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "books")
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @NamedEntityGraph(name = "book.authors", attributeNodes = @NamedAttributeNode(value = "authors"))
@@ -18,54 +22,29 @@ public class Book {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
+	private Long id;
 
 	@Column(name = "title", nullable = false)
 	private String title;
 
-	@ManyToMany
+	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.ALL})
 	@JoinTable(name = "books_authors",
 			joinColumns = @JoinColumn(name = "book_id"),
 			inverseJoinColumns = @JoinColumn(name = "author_id"))
 	private List<Author> authors;
 
 	@Fetch(FetchMode.SUBSELECT)
-	@ManyToMany
+	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinTable(name = "books_genres",
 			joinColumns = @JoinColumn(name = "book_id"),
 			inverseJoinColumns = @JoinColumn(name = "genre_id"))
 	private List<Genre> genres; // For unidirectional collections, Sets are the best choice because they generate the most efficient SQL statements.
 
-	public long getId() {
-		return this.id;
-	}
-
-	public String getTitle() {
-		return this.title;
-	}
-
-	public List<Author> getAuthors() {
-		return this.authors;
-	}
-
-	public List<Genre> getGenres() {
-		return this.genres;
-	}
-
-	public void setId(long id) {
-		this.id = id;
-	}
-
-	public void setTitle(String title) {
+	public Book(String title, List<Author> authors, List<Genre> genres) {
 		this.title = title;
-	}
-
-	public void setAuthors(List<Author> authors) {
-		this.authors = authors;
-	}
-
-	public void setGenres(List<Genre> genres) {
 		this.genres = genres;
+		this.authors = authors;
+		this.authors.forEach(a -> a.getBooks().add(this));
 	}
 
 	public String toString() {

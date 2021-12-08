@@ -23,9 +23,7 @@ public class BookServiceImpl implements BookService {
 
 	@Override
 	public Book add(Book book) {
-
-
-		return null;
+		return bookRepository.add(book);
 	}
 
 	@Override
@@ -43,7 +41,7 @@ public class BookServiceImpl implements BookService {
 
 	@Override
 	public List<Book> getByTitle(String title) {
-		return null;
+		return bookRepository.getByTitle(title);
 	}
 
 	@Override
@@ -53,7 +51,7 @@ public class BookServiceImpl implements BookService {
 
 	@Override
 	public List<Book> getByAuthorFirstNameAndLastName(String firstName, String lastName) {
-		return null;
+		return bookRepository.getByAuthorFirstNameAndLastName(firstName, lastName);
 	}
 
 	@Override
@@ -63,7 +61,7 @@ public class BookServiceImpl implements BookService {
 
 	@Override
 	public List<Book> getByGenreName(String genreName) {
-		return null;
+		return bookRepository.getByGenreName(genreName);
 	}
 
 	@Override

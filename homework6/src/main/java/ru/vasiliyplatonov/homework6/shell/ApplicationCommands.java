@@ -2,18 +2,15 @@ package ru.vasiliyplatonov.homework6.shell;
 
 import lombok.RequiredArgsConstructor;
 import lombok.val;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
 import ru.vasiliyplatonov.homework6.domain.Author;
 import ru.vasiliyplatonov.homework6.domain.Book;
-import ru.vasiliyplatonov.homework6.domain.Genre;
 import ru.vasiliyplatonov.homework6.service.BookService;
 import ru.vasiliyplatonov.homework6.shell.table.renderer.TableRenderer;
 
 import javax.validation.constraints.NotBlank;
-import java.util.List;
 
 @ShellComponent
 @RequiredArgsConstructor
@@ -21,6 +18,7 @@ public class ApplicationCommands {
 
 	private final BookService bookService;
 	private final TableRenderer<Book> bookTableRenderer;
+	private final BookIOProvider bookIOProvider;
 
 
 	@ShellMethod(value = "Show book", key = {"book show"}, group = "book", prefix = "-")
@@ -50,32 +48,20 @@ public class ApplicationCommands {
 //				return bookTableRenderer.render(
 //						bookService.getByAuthorFirstNameAndLastName(fullNameArr[0], fullNameArr[1]));
 
-				bookService.getByAuthorFirstNameAndLastName(fullNameArr[0], fullNameArr[1]);
+				return bookService.getByAuthorFirstNameAndLastName(fullNameArr[0], fullNameArr[1]).toString();
 			}
 			default:
 				return "Unsupported.\nUsing: book show [-id|-genre|-author <filterValue>]";
 		}
 	}
 
-	@ShellMethod(value = "Add book", key = {"book add"}, group = "book", prefix = "-")
-	public String addBook(@NotBlank @ShellOption(value = {"-t", "-title"}, defaultValue = "") String title,
-	                      @NotBlank @ShellOption(value = {"-a-name", "-author-firstname"}, defaultValue = "") String authorFirstName,
-	                      @NotBlank @ShellOption(value = {"-a-lname", "-author-lastname"}, defaultValue = "") String authorLastName,
-	                      @NotBlank @ShellOption(value = {"-g", "-genre"}, defaultValue = "") String genre) {
+	@ShellMethod(value = "Add book", key = {"book add"}, group = "book")
+	public String addBook() {
+		val book = bookIOProvider.getBook();
 
-		var book = new Book(0,
-				title,
-				List.of(new Author(0, authorFirstName, authorLastName)),
-				List.of(new Genre(0, genre))
-		);
+		bookService.add(book);
 
-		try {
-			val resultBook = bookService.add(book);
-			return resultBook.toString();
-		} catch (DuplicateKeyException e) {
-			return "The book already exists";
-		}
-
+		return book.toString();
 	}
 
 
@@ -96,7 +82,7 @@ public class ApplicationCommands {
 
 			case "-author": {
 				val fullNameArr = filterValue.split(" ");
-				bookService.deleteByAuthor(new Author(0, fullNameArr[0], fullNameArr[1]));
+				bookService.deleteByAuthor(new Author(fullNameArr[0], fullNameArr[1]));
 			}
 			break;
 

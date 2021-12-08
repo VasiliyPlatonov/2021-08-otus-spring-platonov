@@ -18,7 +18,7 @@ public interface BookRepository {
 
 	List<Book> getByGenre(Genre genre);
 
-	long add(Book book);
+	Book add(Book book);
 
 	void deleteById(long id);
 

@@ -1,6 +1,7 @@
 package ru.vasiliyplatonov.homework6.repository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 import org.springframework.stereotype.Repository;
 import ru.vasiliyplatonov.homework6.domain.Author;
 import ru.vasiliyplatonov.homework6.domain.Book;
@@ -10,6 +11,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
@@ -32,7 +34,9 @@ public class BookRepositoryJpa implements BookRepository {
 
 	@Override
 	public List<Book> getByTitle(String title) {
-		return null;
+		return em.createQuery("select b from Book b where b.title = :title", Book.class)
+				.setParameter("title", title)
+				.getResultList();
 	}
 
 	@Override
@@ -49,8 +53,25 @@ public class BookRepositoryJpa implements BookRepository {
 	}
 
 	@Override
-	public long add(Book book) {
-		return 0;
+	public List<Book> getByGenreName(String genreName) {
+		return em
+				.createQuery(
+						"select b " +
+								"from Book b " +
+								"where (select g from Genre g where g.name = :genreName) " +
+								"member of b.genres", Book.class)
+				.setParameter("genreName", genreName)
+				.getResultList();
+	}
+
+	@Override
+	public Book add(Book book) {
+		if (book.getId() == null) {
+			em.persist(book);
+			return book;
+		} else {
+			return em.merge(book);
+		}
 	}
 
 	@Override
@@ -84,12 +105,18 @@ public class BookRepositoryJpa implements BookRepository {
 	}
 
 	@Override
-	public List<Book> getByGenreName(String genreName) {
-		return null;
-	}
-
-	@Override
 	public List<Book> getByAuthorFirstNameAndLastName(String firstName, String lastName) {
-		return null;
+
+		val authors = em.createQuery(
+						"select distinct a from Author a " +
+								"join fetch a.books " +
+								"where a.firstName in :names " +
+								"and a.lastName in :names", Author.class)
+				.setParameter("names", List.of(firstName, lastName))
+				.getResultList();
+
+		return authors.stream()
+				.flatMap(a -> a.getBooks().stream())
+				.collect(Collectors.toList());
 	}
 }
