@@ -9,6 +9,7 @@ import ru.vasiliyplatonov.homework6.domain.Genre;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -19,6 +20,10 @@ public class BookRepositoryJpa implements BookRepository {
 
 	@PersistenceContext
 	private final EntityManager em;
+
+	private final AuthorRepository authorRepository;
+	private final GenreRepository genreRepository;
+
 
 	@Override
 	public Optional<Book> getById(long id) {
@@ -66,11 +71,34 @@ public class BookRepositoryJpa implements BookRepository {
 
 	@Override
 	public Book add(Book book) {
+		val authors = book.getAuthors();
+		val genres = book.getGenres();
+
+		val persistBook = new Book(book.getTitle(), new ArrayList<>(), new ArrayList<>());
+
+		authors.forEach(author -> {
+			author = authorRepository
+					.getByFirstNameAndLastName(author.getFirstName(), author.getLastName())
+					.orElse(author);
+
+			persistBook.getAuthors().add(author);
+			author.getBooks().add(persistBook);
+		});
+
+		genres.forEach(genre -> {
+			genre = genreRepository
+					.getByName(genre.getName())
+					.orElse(genre);
+
+			persistBook.getGenres().add(genre);
+		});
+
 		if (book.getId() == null) {
-			em.persist(book);
-			return book;
+			em.persist(persistBook);
+			return persistBook;
 		} else {
-			return em.merge(book);
+			persistBook.setId(book.getId());
+			return em.merge(persistBook);
 		}
 	}
 

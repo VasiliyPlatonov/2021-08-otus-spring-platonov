@@ -19,7 +19,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static ru.vasiliyplatonov.homework6.ExpectedDataHolder.*;
 
 @DataJpaTest
-@Import({BookRepositoryJpa.class})
+@DisplayName("Book JPA repository ")
+@Import({BookRepositoryJpa.class, GenreRepositoryJpa.class, AuthorRepositoryJpa.class}) //todo
 class BookRepositoryJpaTest {
 
 	private static final int EXPECTED_QUERIES_COUNT = 2;
@@ -108,17 +109,17 @@ class BookRepositoryJpaTest {
 	}
 
 	@Test
-	@DisplayName("should correct persist book with a single and existing author and genre")
+	@DisplayName("should correct persist book with existing and not author and genre")
 	void shouldCorrectPersistBook() {
-		val existingAuthor1 = em.find(Author.class, 1L);
-		val existingAuthor2 = em.find(Author.class, 2L);
-		val existingGenre1 = em.find(Genre.class, 1L);
-		val existingGenre2 = em.find(Genre.class, 2L);
+		val existingAuthor = new Author(EXPECTED_AUTHOR_1.getFirstName(), EXPECTED_AUTHOR_1.getLastName());
+		val notExistingAuthor = new Author("Name", "LastName");
+		val existingGenre = new Genre(EXPECTED_GENRE_1.getName());
+		val notExistingGenre = new Genre("new genre");
 
 		val expectedBook = bookRepository.add(
 				new Book("Some new title",
-						List.of(existingAuthor1, existingAuthor2),
-						List.of(existingGenre1, existingGenre2))
+						List.of(existingAuthor, notExistingAuthor),
+						List.of(existingGenre, notExistingGenre))
 		);
 
 		em.flush();
@@ -136,8 +137,8 @@ class BookRepositoryJpaTest {
 	}
 
 	@Test
-	@DisplayName("should correct persist book with new author and genre")
-	void shouldCorrectPersistBookWithNewAuthorAndGenre() {
+	@DisplayName("should correct persist book with new authors and genres")
+	void shouldCorrectPersistBookWithNewAuthorsAndGenres() {
 
 		val newAuthor1 = new Author(null, "New", "Author1");
 		val newAuthor2 = new Author(null, "New", "Author2");
@@ -146,6 +147,7 @@ class BookRepositoryJpaTest {
 
 		val expectedAuthors = List.of(newAuthor1, newAuthor2);
 		val expectedGenres = List.of(newGenre1, newGenre2);
+
 		val expectedTitle = "Some new title";
 		val expectedBook = new Book(expectedTitle, expectedAuthors, expectedGenres);
 

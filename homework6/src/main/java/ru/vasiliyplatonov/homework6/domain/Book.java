@@ -27,7 +27,7 @@ public class Book {
 	@Column(name = "title", nullable = false)
 	private String title;
 
-	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.ALL})
+	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinTable(name = "books_authors",
 			joinColumns = @JoinColumn(name = "book_id"),
 			inverseJoinColumns = @JoinColumn(name = "author_id"))
@@ -44,7 +44,6 @@ public class Book {
 		this.title = title;
 		this.genres = genres;
 		this.authors = authors;
-		this.authors.forEach(a -> a.getBooks().add(this));
 	}
 
 	public String toString() {

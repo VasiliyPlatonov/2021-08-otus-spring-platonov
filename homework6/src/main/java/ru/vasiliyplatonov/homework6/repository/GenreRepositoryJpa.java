@@ -1,30 +1,38 @@
 package ru.vasiliyplatonov.homework6.repository;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import ru.vasiliyplatonov.homework6.domain.Genre;
 
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
-public class GenreRepositoryJpa implements GenreRepository{
+@RequiredArgsConstructor
+public class GenreRepositoryJpa implements GenreRepository {
+
+	@PersistenceContext
+	private final EntityManager em;
+
 	@Override
-	public boolean existsByName(String name) {
-		return false;
+	public Optional<Genre> getById(long id) {
+		return Optional.ofNullable(em.find(Genre.class, id));
 	}
 
 	@Override
-	public boolean existsById(long id) {
-		return false;
-	}
-
-	@Override
-	public Genre getById(long id) {
-		return null;
-	}
-
-	@Override
-	public Genre getByName(String name) {
-		return null;
+	public Optional<Genre> getByName(String name) {
+		try {
+			return Optional.of(
+					em.createQuery("select g from Genre g where g.name = :name", Genre.class)
+							.setParameter("name", name)
+							.getSingleResult()
+			);
+		} catch (NoResultException e) {
+			return Optional.empty();
+		}
 	}
 
 	@Override
@@ -33,17 +41,13 @@ public class GenreRepositoryJpa implements GenreRepository{
 	}
 
 	@Override
-	public long add(Genre genre) {
-		return 0;
+	public Genre add(Genre genre) {
+		if (genre.getId() == null) {
+			em.persist(genre);
+			return genre;
+		} else {
+			return em.merge(genre);
+		}
 	}
 
-	@Override
-	public void deleteById(long id) {
-
-	}
-
-	@Override
-	public void update(Genre genre) {
-
-	}
 }

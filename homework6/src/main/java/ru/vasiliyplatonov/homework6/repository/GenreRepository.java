@@ -3,23 +3,15 @@ package ru.vasiliyplatonov.homework6.repository;
 import ru.vasiliyplatonov.homework6.domain.Genre;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface GenreRepository {
 
-	boolean existsByName(String name);
+	Optional<Genre> getById(long id);
 
-	boolean existsById(long id);
-
-	Genre getById(long id);
-
-	Genre getByName(String name);
+	Optional<Genre> getByName(String name);
 
 	List<Genre> getAll();
 
-	long add(Genre genre);
-
-	void deleteById(long id);
-
-	void update(Genre genre);
-
+	Genre add(Genre genre);
 }
