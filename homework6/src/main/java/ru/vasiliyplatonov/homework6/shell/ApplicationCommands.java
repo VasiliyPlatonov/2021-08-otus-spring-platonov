@@ -8,7 +8,9 @@ import org.springframework.shell.standard.ShellOption;
 import ru.vasiliyplatonov.homework6.domain.Author;
 import ru.vasiliyplatonov.homework6.domain.Book;
 import ru.vasiliyplatonov.homework6.service.BookService;
+import ru.vasiliyplatonov.homework6.service.ioservice.IOService;
 import ru.vasiliyplatonov.homework6.shell.table.renderer.TableRenderer;
+import ru.vasiliyplatonov.homework6.shell.updater.BookInteractiveUpdater;
 
 import javax.validation.constraints.NotBlank;
 
@@ -19,6 +21,8 @@ public class ApplicationCommands {
 	private final BookService bookService;
 	private final TableRenderer<Book> bookTableRenderer;
 	private final BookIOProvider bookIOProvider;
+	private final IOService ioService;
+	private final BookInteractiveUpdater bookInteractiveUpdater;
 
 
 	@ShellMethod(value = "Show book", key = {"book show"}, group = "book", prefix = "-")
@@ -95,11 +99,15 @@ public class ApplicationCommands {
 	@ShellMethod(value = "Update book", key = {"book update"}, group = "book", prefix = "-")
 	public String updateBook(@NotBlank String id,
 	                         @ShellOption(value = {"-t", "-title"}, defaultValue = "") String title,
-	                         @ShellOption(value = {"-a-name", "-author-firstname"}, defaultValue = "") String authorFirstName,
-	                         @ShellOption(value = {"-a-lname", "-author-lastname"}, defaultValue = "") String authorLastName,
-	                         @ShellOption(value = {"-g", "-genre"}, defaultValue = "") String genre) {
+	                         @ShellOption(value = {"-a", "-authors"}, defaultValue = "") String authors,
+	                         @ShellOption(value = {"-g", "-genres"}, defaultValue = "") String genre) {
 
-		bookService.update(Long.parseLong(id), title, authorFirstName, authorLastName, genre);
+		ioService.outLine(bookService.getById(Long.parseLong(id)).toString());
+		ioService.outLine("Please enter the books properties to update: ");
+		ioService.outLine("example: \"$ title, genres\" for update books title and genres.");
+
+		bookInteractiveUpdater.update();
+
 		return "Success";
 	}
 
