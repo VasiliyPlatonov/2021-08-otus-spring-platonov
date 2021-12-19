@@ -65,7 +65,7 @@ public class BookServiceImpl implements BookService {
 	}
 
 	@Override
-	public void update(long bookId, String title, String authorFirstName, String authorLastName, String genreName) {
+	public void update(Book updatedBook) {
 
 	}
 

@@ -24,8 +24,8 @@ public class IOServiceImpl implements IOService {
     }
 
     @Override
-    public void outLine(String message) {
-        out.println(message);
+    public void outLine(Object obj) {
+        out.println(obj.toString());
     }
 
     @Override

@@ -1,4 +1,4 @@
-package ru.vasiliyplatonov.homework6.shell;
+package ru.vasiliyplatonov.homework6.service.bookprovider;
 
 import lombok.RequiredArgsConstructor;
 import lombok.val;
@@ -13,11 +13,11 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-class BookIOProvider {
+public class BookInteractiveProvider implements BookProvider {
 
 	private final IOService ioService;
 
-	Book getBook() {
+	public Book getBook() {
 		val title = getTitle();
 		val authors = getAuthors();
 		val genres = getGenres();
@@ -25,7 +25,7 @@ class BookIOProvider {
 		return new Book(title, authors, genres);
 	}
 
-	private List<Genre> getGenres() {
+	public List<Genre> getGenres() {
 		var genres = new ArrayList<Genre>();
 		var command = "+";
 
@@ -47,7 +47,7 @@ class BookIOProvider {
 		return genres;
 	}
 
-	private List<Author> getAuthors() {
+	public List<Author> getAuthors() {
 		var authors = new ArrayList<Author>();
 		var command = "+";
 
@@ -73,7 +73,7 @@ class BookIOProvider {
 		return authors;
 	}
 
-	private String getTitle() {
+	public String getTitle() {
 		var title = "";
 
 		while (title.isEmpty()) {

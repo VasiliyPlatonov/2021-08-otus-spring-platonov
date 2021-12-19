@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class BookInteractiveUpdater implements BookUpdater {
 
-	private Map<String, BookUpdater> bookUpdaters;
+	private final Map<String, BookUpdater> bookUpdaters;
 
 	@Override
 	public Book update(Book book) {
@@ -20,9 +20,10 @@ public class BookInteractiveUpdater implements BookUpdater {
 	}
 
 	public Book update(Book book, String... commands) {
-//		List<BookUpdater> bookUpdaters = createUpdaters(commands);
+		mapCommandsToUpdater(Arrays.stream(commands))
+				.forEach(bookUpdater -> bookUpdater.update(book));
 
-		mapCommandsToUpdater(Arrays.stream(commands)).forEach(bookUpdater -> bookUpdater.update(book));
+		System.out.println("updated book: " + book.toString() + " genres: " + book.getGenres() + " authors: " + book.getAuthors().toString());
 
 		return book;
 	}
@@ -31,16 +32,22 @@ public class BookInteractiveUpdater implements BookUpdater {
 	private Stream<BookUpdater> mapCommandsToUpdater(Stream<String> commands) {
 		return commands.map(command -> {
 			switch (command) {
-				case "title":
+				case BookUpdateCommands.TITLE:
 					return bookUpdaters.get("bookTitleUpdater");
 
-				case "authors":
+				case BookUpdateCommands.AUTHORS:
 					return bookUpdaters.get("bookAuthorsUpdater");
 
-				case "genres":
+				case BookUpdateCommands.GENRES:
 					return bookUpdaters.get("bookGenresUpdater");
 			}
 			return null;
 		});
+	}
+
+	public static class BookUpdateCommands {
+		public static final String TITLE = "title";
+		public static final String GENRES = "genres";
+		public static final String AUTHORS = "authors";
 	}
 }

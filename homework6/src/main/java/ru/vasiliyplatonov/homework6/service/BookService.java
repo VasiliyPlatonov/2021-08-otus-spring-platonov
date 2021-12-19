@@ -24,7 +24,7 @@ public interface BookService {
 
 	List<Book> getByGenreName(String genreName);
 
-	void update(long bookId, String title, String authorFirstName, String authorLastName, String genreName);
+	void update(Book updatedBook);
 
 	void deleteById(long id);
 

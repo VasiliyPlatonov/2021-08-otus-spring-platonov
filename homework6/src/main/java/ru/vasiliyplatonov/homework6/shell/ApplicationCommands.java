@@ -8,6 +8,7 @@ import org.springframework.shell.standard.ShellOption;
 import ru.vasiliyplatonov.homework6.domain.Author;
 import ru.vasiliyplatonov.homework6.domain.Book;
 import ru.vasiliyplatonov.homework6.service.BookService;
+import ru.vasiliyplatonov.homework6.service.bookprovider.BookInteractiveProvider;
 import ru.vasiliyplatonov.homework6.service.ioservice.IOService;
 import ru.vasiliyplatonov.homework6.shell.table.renderer.TableRenderer;
 import ru.vasiliyplatonov.homework6.shell.updater.BookInteractiveUpdater;
@@ -20,7 +21,7 @@ public class ApplicationCommands {
 
 	private final BookService bookService;
 	private final TableRenderer<Book> bookTableRenderer;
-	private final BookIOProvider bookIOProvider;
+	private final BookInteractiveProvider bookInteractiveProvider;
 	private final IOService ioService;
 	private final BookInteractiveUpdater bookInteractiveUpdater;
 
@@ -61,7 +62,7 @@ public class ApplicationCommands {
 
 	@ShellMethod(value = "Add book", key = {"book add"}, group = "book")
 	public String addBook() {
-		val book = bookIOProvider.getBook();
+		val book = bookInteractiveProvider.getBook();
 
 		bookService.add(book);
 
@@ -97,16 +98,17 @@ public class ApplicationCommands {
 	}
 
 	@ShellMethod(value = "Update book", key = {"book update"}, group = "book", prefix = "-")
-	public String updateBook(@NotBlank String id,
-	                         @ShellOption(value = {"-t", "-title"}, defaultValue = "") String title,
-	                         @ShellOption(value = {"-a", "-authors"}, defaultValue = "") String authors,
-	                         @ShellOption(value = {"-g", "-genres"}, defaultValue = "") String genre) {
+	public String updateBook(@NotBlank String id) {
 
-		ioService.outLine(bookService.getById(Long.parseLong(id)).toString());
+		val book = bookService.getById(Long.parseLong(id));
+		ioService.outLine(book.toString());
+
 		ioService.outLine("Please enter the books properties to update: ");
-		ioService.outLine("example: \"$ title, genres\" for update books title and genres.");
+		ioService.outLine("example: \"title, genres\" for update books title and genres.");
 
-		bookInteractiveUpdater.update();
+		val commands = ioService.readLine().split("[, ]+");
+		val updatedBook = bookInteractiveUpdater.update(book, commands);
+		bookService.update(updatedBook);
 
 		return "Success";
 	}
