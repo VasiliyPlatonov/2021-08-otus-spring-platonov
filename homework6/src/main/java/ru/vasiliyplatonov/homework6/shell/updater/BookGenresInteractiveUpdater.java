@@ -5,7 +5,7 @@ import lombok.val;
 import org.springframework.stereotype.Service;
 import ru.vasiliyplatonov.homework6.domain.Book;
 import ru.vasiliyplatonov.homework6.service.ioservice.IOService;
-import ru.vasiliyplatonov.homework6.shell.updater.command.BookUpdateCommand;
+import ru.vasiliyplatonov.homework6.shell.updater.command.genre.BookGenresUpdateCommand;
 
 import java.util.List;
 
@@ -14,12 +14,10 @@ import java.util.List;
 public class BookGenresInteractiveUpdater implements BookUpdater {
 
 	private final IOService io;
-	private final List<BookUpdateCommand> updateCommands;
+	private final List<BookGenresUpdateCommand> updateCommands;
 
 	@Override
 	public Book update(Book book) {
-		System.out.println("BookGenresInteractiveUpdater#update");
-
 		while (true) {
 			io.outLine("\nEnter the key of command or 'exit': ");
 			updateCommands.forEach(io::outLine);
