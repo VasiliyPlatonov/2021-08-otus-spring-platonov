@@ -19,7 +19,7 @@ public class BookGenresInteractiveUpdater implements BookUpdater {
 	@Override
 	public Book update(Book book) {
 		while (true) {
-			io.outLine("\nEnter the key of command or 'exit': ");
+			io.outLine("\nFor update books genres enter the key of command or 'exit': ");
 			updateCommands.forEach(io::outLine);
 
 			val userCommand = io.readLine();

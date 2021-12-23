@@ -1,6 +1,7 @@
 package ru.vasiliyplatonov.homework6.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.vasiliyplatonov.homework6.domain.Author;
@@ -28,10 +29,13 @@ public class BookServiceImpl implements BookService {
 
 	@Override
 	public Book getById(long id) {
-		final var book = bookRepository.getById(id);
-
+		val book = bookRepository.getById(id);
 		return book.orElse(null);
+	}
 
+	@Override
+	public Book getByIdFullyCompleted(long id) {
+		return null;
 	}
 
 	@Override

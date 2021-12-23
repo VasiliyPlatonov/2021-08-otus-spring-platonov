@@ -8,6 +8,7 @@ import ru.vasiliyplatonov.homework6.domain.Book;
 import ru.vasiliyplatonov.homework6.domain.Genre;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,31 @@ public class BookRepositoryJpa implements BookRepository {
 	@Override
 	public Optional<Book> getById(long id) {
 		return Optional.of(em.find(Book.class, id));
+	}
+
+	@Override
+	public Optional<Book> getByIdFullyCompleted(long id) {
+
+		//todo попробовать реализовать с нативным запросом
+
+		try {
+			val book = em.createQuery("" +
+							"select b from Book b " +
+							"join fetch b.genres " +
+							"where b.id = :id", Book.class)
+					.setParameter("id", id)
+					.getSingleResult();
+
+			val authors = book.getAuthors();
+
+			em.createQuery("select a from Author a join fetch a.books where :book member of a.books", Author.class)
+					.setParameter("book", book)
+					.getResultList();
+
+			return Optional.of(book);
+		} catch (NoResultException e) {
+			return Optional.empty();
+		}
 	}
 
 	@Override

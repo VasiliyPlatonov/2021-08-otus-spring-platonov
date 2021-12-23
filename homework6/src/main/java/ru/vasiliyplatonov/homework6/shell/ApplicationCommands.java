@@ -103,11 +103,7 @@ public class ApplicationCommands {
 		val book = bookService.getById(Long.parseLong(id));
 		ioService.outLine(book.toString());
 
-		ioService.outLine("Please enter the books properties to update: ");
-		ioService.outLine("example: \"title, genres\" for update books title and genres.");
-
-		val commands = ioService.readLine().split("[, ]+");
-		val updatedBook = bookInteractiveUpdater.update(book, commands);
+		val updatedBook = bookInteractiveUpdater.update(book);
 		bookService.update(updatedBook);
 
 		return "Success";

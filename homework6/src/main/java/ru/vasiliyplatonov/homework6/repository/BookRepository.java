@@ -10,6 +10,8 @@ import java.util.Optional;
 public interface BookRepository {
 	Optional<Book> getById(long id);
 
+	Optional<Book> getByIdFullyCompleted(long id);
+
 	List<Book> getAll();
 
 	List<Book> getByTitle(String title);
