@@ -5,7 +5,6 @@ import lombok.val;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
-import ru.vasiliyplatonov.homework6.domain.Author;
 import ru.vasiliyplatonov.homework6.domain.Book;
 import ru.vasiliyplatonov.homework6.service.BookService;
 import ru.vasiliyplatonov.homework6.service.bookprovider.BookInteractiveProvider;
@@ -71,7 +70,7 @@ public class ApplicationCommands {
 
 
 	@ShellMethod(value = "Delete book", key = {"book delete"}, group = "book", prefix = "-")
-	public String deleteBook(@ShellOption(help = "Possible values are: '-id', '-title', '-author'", defaultValue = "-title") String filterName,
+	public String deleteBook(@ShellOption(help = "Possible values are: '-id', '-title'", defaultValue = "-title") String filterName,
 	                         String filterValue) {
 
 		switch (filterName) {
@@ -85,14 +84,8 @@ public class ApplicationCommands {
 			}
 			break;
 
-			case "-author": {
-				val fullNameArr = filterValue.split(" ");
-				bookService.deleteByAuthor(new Author(fullNameArr[0], fullNameArr[1]));
-			}
-			break;
-
 			default:
-				return "Unsupported.\nUsing: book delete [-id|-title|-author <filterValue>]";
+				return "Unsupported.\nUsing: book delete [-id|-title <filterValue>]";
 		}
 		return "Success";
 	}
@@ -100,10 +93,11 @@ public class ApplicationCommands {
 	@ShellMethod(value = "Update book", key = {"book update"}, group = "book", prefix = "-")
 	public String updateBook(@NotBlank String id) {
 
-		val book = bookService.getById(Long.parseLong(id));
+		val book = bookService.getByIdFullyCompleted(Long.parseLong(id));
 		ioService.outLine(book.toString());
 
 		val updatedBook = bookInteractiveUpdater.update(book);
+
 		bookService.update(updatedBook);
 
 		return "Success";

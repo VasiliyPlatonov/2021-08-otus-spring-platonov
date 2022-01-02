@@ -5,6 +5,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 import ru.vasiliyplatonov.homework6.domain.Author;
 import ru.vasiliyplatonov.homework6.domain.Book;
 import ru.vasiliyplatonov.homework6.domain.Genre;
@@ -38,6 +40,17 @@ class BookServiceImplTest {
 		assertThat(actualBook)
 				.usingRecursiveComparison()
 				.ignoringFields("authors", "genres")
+				.isEqualTo(EXPECTED_BOOK_1);
+	}
+
+	@Test
+	@DisplayName("should return book by id with all info")
+	void shouldReturnBookByIdWithAllInfo() {
+		val actualBook = bookService.getByIdFullyCompleted(EXPECTED_BOOK_1.getId());
+
+		assertThat(actualBook)
+				.usingRecursiveComparison()
+				.ignoringFields("authors.books")
 				.isEqualTo(EXPECTED_BOOK_1);
 	}
 
@@ -91,10 +104,10 @@ class BookServiceImplTest {
 	}
 
 	@Test
+	@Transactional
+	@Rollback
 	@DisplayName("should correct persist book with a single and existing author and genre")
 	void shouldCorrectPersistBook() {
-
-		// TODO: 08.12.2021 ОСТАНОВИЛСЯ ТУТ. КАК ДОБАВИТЬ КНИГУ С УЖЕ СУЩЕСТВУЮЩИМИ В БАЗЕ ДАННЫХ ЖАНРОМ И АВТОРОМ???
 		val expectedTitle = "Some new title";
 		val expectedAuthors = List.of(new Author(null, EXPECTED_AUTHOR_1.getFirstName(), EXPECTED_AUTHOR_1.getFirstName()));
 		val expectedGenres = List.of(new Genre(null, EXPECTED_GENRE_1.getName()));
@@ -104,13 +117,71 @@ class BookServiceImplTest {
 				expectedAuthors,
 				expectedGenres));
 
-		val actualBooks = bookService.getByTitle(expectedTitle);
+		val actualBook = bookService.getByIdFullyCompleted(expectedBook.getId());
 
-		assertThat(actualBooks)
-				.isNotEmpty()
+		assertThat(actualBook)
+				.isNotNull()
 				.usingRecursiveComparison()
-				.ignoringFields("id")
-				.isEqualTo(List.of(expectedBook));
+				.ignoringFields("id", "authors.books", "authors.id", "genres.id")
+				.isEqualTo(expectedBook);
+	}
+
+	@Test
+	@Transactional
+	@Rollback
+	@DisplayName("should correct update book with existing and not author and genre")
+	void shouldCorrectUpdateBook() {
+		val bookId = EXPECTED_BOOK_1.getId();
+		val expectedBook = bookService.getByIdFullyCompleted(bookId);
+
+		val existingAuthor = expectedBook.getAuthors().get(0);
+		val existingGenre = expectedBook.getGenres().get(0);
+		val notExistingAuthor = new Author("Name", "LastName");
+		val notExistingGenre = new Genre("new genre");
+
+		existingAuthor.setFirstName("new name");
+		existingGenre.setName("new name");
+		expectedBook.getAuthors().add(notExistingAuthor);
+		expectedBook.getGenres().add(notExistingGenre);
+
+		bookService.update(expectedBook);
+
+		val actualBook = bookService.getByIdFullyCompleted(bookId);
+
+		assertThat(actualBook)
+				.isNotNull()
+				.usingRecursiveComparison()
+				.ignoringFields("id", "authors.books", "authors.id", "genres.id")
+				.isEqualTo(expectedBook);
+	}
+
+	@Test
+	@Transactional
+	@Rollback
+	@DisplayName("should correct delete book by id")
+	void shouldCorrectDeleteBookById() {
+		val bookId = EXPECTED_BOOK_1.getId();
+
+		bookService.deleteById(bookId);
+
+		val actualBook = bookService.getById(bookId);
+
+		assertThat(actualBook).isNull();
+	}
+
+	@Test
+	@Transactional
+	@Rollback
+	@DisplayName("should correct delete book by title")
+	void shouldCorrectDeleteBookByTitle() {
+		val bookId = EXPECTED_BOOK_1.getId();
+		val bookTitle = EXPECTED_BOOK_1.getTitle();
+
+		bookService.deleteByTitle(bookTitle);
+
+		val actualBook = bookService.getById(bookId);
+
+		assertThat(actualBook).isNull();
 	}
 }
 

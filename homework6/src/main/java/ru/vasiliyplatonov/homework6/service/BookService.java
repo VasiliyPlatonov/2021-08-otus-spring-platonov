@@ -1,6 +1,5 @@
 package ru.vasiliyplatonov.homework6.service;
 
-import ru.vasiliyplatonov.homework6.domain.Author;
 import ru.vasiliyplatonov.homework6.domain.Book;
 import ru.vasiliyplatonov.homework6.domain.Genre;
 
@@ -18,8 +17,6 @@ public interface BookService {
 
 	List<Book> getByTitle(String title);
 
-	List<Book> getByAuthor(Author author);
-
 	List<Book> getByAuthorFirstNameAndLastName(String firstName, String lastName);
 
 	List<Book> getByGenre(Genre genre);
@@ -31,7 +28,4 @@ public interface BookService {
 	void deleteById(long id);
 
 	void deleteByTitle(String title);
-
-	void deleteByAuthor(Author author);
-
 }

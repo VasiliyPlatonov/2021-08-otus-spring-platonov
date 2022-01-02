@@ -1,44 +1,31 @@
 package ru.vasiliyplatonov.homework6.domain;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
 @Table(name = "genres")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Genre {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@EqualsAndHashCode.Exclude
 	private Long id;
 
-	@NaturalId
-	@Column(name = "name")
+	@NaturalId(mutable = true)
+	@Column(name = "name", unique = true)
 	private String name;
 
 	public Genre(String name) {
 		this.name = name;
 	}
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		Genre genre = (Genre) o;
-		return name.equals(genre.name);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(name);
-	}
 }

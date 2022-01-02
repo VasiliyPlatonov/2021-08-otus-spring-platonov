@@ -3,13 +3,12 @@ package ru.vasiliyplatonov.homework6.service;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import ru.vasiliyplatonov.homework6.domain.Author;
 import ru.vasiliyplatonov.homework6.domain.Book;
 import ru.vasiliyplatonov.homework6.domain.Genre;
-import ru.vasiliyplatonov.homework6.repository.AuthorRepository;
 import ru.vasiliyplatonov.homework6.repository.BookRepository;
-import ru.vasiliyplatonov.homework6.repository.GenreRepository;
 
 import java.util.List;
 
@@ -19,8 +18,7 @@ import java.util.List;
 public class BookServiceImpl implements BookService {
 
 	private final BookRepository bookRepository;
-	private final AuthorRepository authorRepository;
-	private final GenreRepository genreRepository;
+
 
 	@Override
 	public Book add(Book book) {
@@ -35,7 +33,7 @@ public class BookServiceImpl implements BookService {
 
 	@Override
 	public Book getByIdFullyCompleted(long id) {
-		return null;
+		return bookRepository.getByIdFullyCompleted(id).orElse(null);
 	}
 
 	@Override
@@ -46,11 +44,6 @@ public class BookServiceImpl implements BookService {
 	@Override
 	public List<Book> getByTitle(String title) {
 		return bookRepository.getByTitle(title);
-	}
-
-	@Override
-	public List<Book> getByAuthor(Author author) {
-		return null;
 	}
 
 	@Override
@@ -69,22 +62,19 @@ public class BookServiceImpl implements BookService {
 	}
 
 	@Override
-	public void update(Book updatedBook) {
-
+	@Transactional(isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED)
+	public void update(Book book) {
+		bookRepository.update(book);
 	}
 
 	@Override
 	public void deleteById(long id) {
-
+		bookRepository.deleteById(id);
 	}
 
 	@Override
 	public void deleteByTitle(String title) {
-
+		bookRepository.deleteByTitle(title);
 	}
 
-	@Override
-	public void deleteByAuthor(Author author) {
-
-	}
 }

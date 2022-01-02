@@ -28,27 +28,26 @@ public class BookRepositoryJpa implements BookRepository {
 
 	@Override
 	public Optional<Book> getById(long id) {
-		return Optional.of(em.find(Book.class, id));
+		return Optional.ofNullable(em.find(Book.class, id));
 	}
 
 	@Override
 	public Optional<Book> getByIdFullyCompleted(long id) {
 
-		//todo попробовать реализовать с нативным запросом
-
 		try {
-			val book = em.createQuery("" +
+			var book = em.createQuery("" +
 							"select b from Book b " +
-							"join fetch b.genres " +
+							"left join fetch b.genres " +
 							"where b.id = :id", Book.class)
 					.setParameter("id", id)
 					.getSingleResult();
 
-			val authors = book.getAuthors();
-
-			em.createQuery("select a from Author a join fetch a.books where :book member of a.books", Author.class)
-					.setParameter("book", book)
-					.getResultList();
+			book = em.createQuery("" +
+							"select b from Book b " +
+							"left join fetch b.authors " +
+							"where b.id = :id", Book.class)
+					.setParameter("id", id)
+					.getSingleResult();
 
 			return Optional.of(book);
 		} catch (NoResultException e) {
@@ -68,11 +67,6 @@ public class BookRepositoryJpa implements BookRepository {
 		return em.createQuery("select b from Book b where b.title = :title", Book.class)
 				.setParameter("title", title)
 				.getResultList();
-	}
-
-	@Override
-	public List<Book> getByAuthor(Author author) {
-		return null;
 	}
 
 	@Override
@@ -130,32 +124,37 @@ public class BookRepositoryJpa implements BookRepository {
 
 	@Override
 	public void deleteById(long id) {
-
-	}
-
-	@Override
-	public void deleteByAuthor(Author author) {
-
+		em.createQuery("delete from Book b where b.id = :id")
+				.setParameter("id", id)
+				.executeUpdate();
 	}
 
 	@Override
 	public void delete(List<Book> books) {
+		val ids = books.stream().map(Book::getId).collect(Collectors.toList());
 
+		em.createQuery("delete from Book b where b.id in :ids")
+				.setParameter("ids", ids)
+				.executeUpdate();
 	}
 
 	@Override
 	public void delete(Book book) {
-
+		em.createQuery("delete from Book b where b.id = :id")
+				.setParameter("id", book.getId())
+				.executeUpdate();
 	}
 
 	@Override
 	public void deleteByTitle(String title) {
-
+		em.createQuery("delete from Book b where b.title = :title")
+				.setParameter("title", title)
+				.executeUpdate();
 	}
 
 	@Override
 	public void update(Book book) {
-
+		em.merge(book);
 	}
 
 	@Override

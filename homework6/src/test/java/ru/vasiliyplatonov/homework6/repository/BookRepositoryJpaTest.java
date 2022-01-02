@@ -74,16 +74,15 @@ class BookRepositoryJpaTest {
 
 	@Test
 	@DisplayName("should return book by id with all info")
-	void shouldReturnBookByIdFullyWithAllInfo() {
-		System.out.println("-------------------------------------");
+	void shouldReturnBookByIdWithAllInfo() {
+		System.out.println("--------------------------------------------------");
 		val actualBook = bookRepository.getByIdFullyCompleted(EXPECTED_BOOK_1.getId());
-		System.out.println("-------------------------------------");
+		System.out.println("--------------------------------------------------");
 
-		System.out.println(actualBook + "\n\n");
 
-//		assertThat(actualBook)
-//				.usingRecursiveComparison()
-//				.isEqualTo(Optional.of(EXPECTED_BOOK_1));
+		assertThat(actualBook)
+				.usingRecursiveComparison()
+				.isEqualTo(Optional.of(EXPECTED_BOOK_1));
 	}
 
 	@Test
@@ -177,4 +176,86 @@ class BookRepositoryJpaTest {
 				.ignoringFields("id")
 				.isEqualTo(List.of(expectedBook));
 	}
+
+	@Test
+	@DisplayName("should correct update book with existing and not author and genre")
+	void shouldCorrectUpdateBook() {
+		val bookId = EXPECTED_BOOK_1.getId();
+		val expectedBook = em.find(Book.class, bookId);
+
+		val existingAuthor = expectedBook.getAuthors().get(0);
+		val notExistingAuthor = new Author("Name", "LastName");
+		val existingGenre = expectedBook.getGenres().get(0);
+		val notExistingGenre = new Genre("new genre");
+
+		existingAuthor.setFirstName("New name");
+		existingGenre.setName("New name");
+		expectedBook.getGenres().add(notExistingGenre);
+		expectedBook.getAuthors().add(notExistingAuthor);
+
+		bookRepository.update(expectedBook);
+
+		em.flush();
+		em.clear();
+
+		val actualBook = em.find(Book.class, bookId);
+
+		assertThat(actualBook)
+				.isNotNull()
+				.usingRecursiveComparison()
+				.ignoringFields("id", "authors.books", "authors.id", "genres.id")
+				.isEqualTo(expectedBook);
+	}
+
+	@Test
+	@DisplayName("should correct delete book by id")
+	void shouldCorrectDeleteBookById() {
+		val bookId = EXPECTED_BOOK_1.getId();
+
+		bookRepository.deleteById(bookId);
+
+		em.flush();
+		em.clear();
+
+		val actualBook = em.find(Book.class, bookId);
+
+		assertThat(actualBook).isNull();
+	}
+
+	@Test
+	@DisplayName("should correct delete book by title")
+	void shouldCorrectDeleteBookByTitle() {
+		val bookId = EXPECTED_BOOK_1.getId();
+		val bookTitle = em.find(Book.class, bookId).getTitle();
+
+		bookRepository.deleteByTitle(bookTitle);
+
+		em.flush();
+		em.clear();
+
+		val actualBook = em.find(Book.class, bookId);
+
+		assertThat(actualBook).isNull();
+	}
+
+	@Test
+	@DisplayName("should correct delete all books in list")
+	void shouldCorrectDeleteAllBooksInList() {
+
+		val books = List.of(EXPECTED_BOOK_1, EXPECTED_BOOK_3);
+
+		bookRepository.delete(books);
+
+		em.flush();
+		em.clear();
+
+		val actualBook1 = em.find(Book.class, EXPECTED_BOOK_1.getId());
+		val actualBook2 = em.find(Book.class, EXPECTED_BOOK_3.getId());
+
+
+		assertThat(actualBook1).isNull();
+		assertThat(actualBook2).isNull();
+	}
+
+
 }
