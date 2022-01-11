@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS books;
 DROP TABLE IF EXISTS genres;
 DROP TABLE IF EXISTS authors;
+DROP TABLE IF EXISTS book_comments;
 DROP TABLE IF EXISTS books_authors;
 DROP TABLE IF EXISTS books_genres;
 
@@ -29,7 +30,19 @@ CREATE TABLE books
 --         ON DELETE CASCADE
 --         ON UPDATE CASCADE,
 --     CONSTRAINT unique_book UNIQUE (title, author_id)
+
 );
+
+CREATE TABLE book_comments
+(
+    id      IDENTITY NOT NULL PRIMARY KEY,
+    text    VARCHAR  NOT NULL,
+    book_id BIGINT NOT NULL,
+    FOREIGN KEY (book_id) REFERENCES books (id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
 
 --     todo: как обеспечить уникальность (название книги && авторы)?
 CREATE TABLE books_authors

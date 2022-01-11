@@ -57,8 +57,13 @@ public class BookRepositoryJpa implements BookRepository {
 
 	@Override
 	public List<Book> getAll() {
-		return em
-				.createQuery("select b from Book b join fetch b.authors", Book.class)
+		val books = em
+				.createQuery("select b from Book b join fetch b.genres", Book.class)
+				.getResultList();
+
+		return em.createQuery("" +
+						"select b from Book b " +
+						"left join fetch b.authors", Book.class)
 				.getResultList();
 	}
 
@@ -79,13 +84,21 @@ public class BookRepositoryJpa implements BookRepository {
 
 	@Override
 	public List<Book> getByGenreName(String genreName) {
-		return em
+
+		val graph = em.getEntityGraph("book.authors");
+
+		val book = em
 				.createQuery(
 						"select b " +
 								"from Book b " +
 								"where (select g from Genre g where g.name = :genreName) " +
 								"member of b.genres", Book.class)
 				.setParameter("genreName", genreName)
+				.getResultList();
+
+		return em.createQuery("" +
+						"select b from Book b " +
+						"left join fetch b.genres", Book.class)
 				.getResultList();
 	}
 

@@ -200,11 +200,11 @@ class BookRepositoryJpaTest {
 
 		val actualBook = em.find(Book.class, bookId);
 
-		assertThat(actualBook)
+		assertThat(expectedBook)
 				.isNotNull()
 				.usingRecursiveComparison()
 				.ignoringFields("id", "authors.books", "authors.id", "genres.id")
-				.isEqualTo(expectedBook);
+				.isEqualTo(actualBook);
 	}
 
 	@Test

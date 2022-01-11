@@ -15,6 +15,15 @@ VALUES (1, 'The Green Mile'),
        (3, 'A Hero of Our Time'),
        (4, 'Demon');
 
+INSERT INTO book_comments (id, text, book_id)
+VALUES (1, 'That`s awesome', 1),
+       (2, 'That`s awesome', 1),
+       (3, 'That`s awesome', 1),
+       (4, 'That`s awesome', 2),
+       (5, 'That`s awesome', 2),
+       (6, 'That`s awesome', 3);
+
+
 INSERT INTO books_authors (book_id, author_id)
 VALUES (1, 1),
        (2, 1),

@@ -9,6 +9,7 @@ import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "books")
@@ -46,8 +47,22 @@ public class Book {
 		this.authors = authors;
 	}
 
+	@Override
 	public String toString() {
 		return "Book(id=" + this.getId() + ", title=" + this.getTitle() + ")";
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Book book = (Book) o;
+		return title.equals(book.title) && authors.equals(book.authors) && Objects.equals(genres, book.genres);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(title, authors, genres);
 	}
 }
 
