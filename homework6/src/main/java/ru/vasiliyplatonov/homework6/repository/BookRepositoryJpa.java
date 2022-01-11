@@ -35,17 +35,17 @@ public class BookRepositoryJpa implements BookRepository {
 	public Optional<Book> getByIdFullyCompleted(long id) {
 
 		try {
-			var book = em.createQuery("" +
+			var book = em.createQuery(
 							"select b from Book b " +
-							"left join fetch b.genres " +
-							"where b.id = :id", Book.class)
+									"left join fetch b.genres " +
+									"where b.id = :id", Book.class)
 					.setParameter("id", id)
 					.getSingleResult();
 
-			book = em.createQuery("" +
+			book = em.createQuery(
 							"select b from Book b " +
-							"left join fetch b.authors " +
-							"where b.id = :id", Book.class)
+									"left join fetch b.authors " +
+									"where b.id = :id", Book.class)
 					.setParameter("id", id)
 					.getSingleResult();
 
@@ -61,9 +61,9 @@ public class BookRepositoryJpa implements BookRepository {
 				.createQuery("select b from Book b join fetch b.genres", Book.class)
 				.getResultList();
 
-		return em.createQuery("" +
+		return em.createQuery(
 						"select b from Book b " +
-						"left join fetch b.authors", Book.class)
+								"left join fetch b.authors", Book.class)
 				.getResultList();
 	}
 
@@ -76,29 +76,39 @@ public class BookRepositoryJpa implements BookRepository {
 
 	@Override
 	public List<Book> getByGenre(Genre genre) {
-		return em
-				.createQuery("select b from Book b where :genre member of b.genres", Book.class)
+		val books = em
+				.createQuery(
+						"select distinct b from Book b " +
+								"left join fetch b.genres " +
+								"where :genre member of b.genres", Book.class)
 				.setParameter("genre", genre)
+				.getResultList();
+
+		return em.createQuery(
+						"select b from Book b " +
+								"left join fetch b.authors " +
+								"where b in :books", Book.class)
+				.setParameter("books", books)
 				.getResultList();
 	}
 
 	@Override
 	public List<Book> getByGenreName(String genreName) {
-
-		val graph = em.getEntityGraph("book.authors");
-
-		val book = em
+		val books = em
 				.createQuery(
-						"select b " +
-								"from Book b " +
+						"select distinct b from Book b " +
+								"left join fetch b.genres " +
 								"where (select g from Genre g where g.name = :genreName) " +
 								"member of b.genres", Book.class)
 				.setParameter("genreName", genreName)
 				.getResultList();
 
-		return em.createQuery("" +
+
+		return em.createQuery(
 						"select b from Book b " +
-						"left join fetch b.genres", Book.class)
+								"left join fetch b.authors " +
+								"where b in :books", Book.class)
+				.setParameter("books", books)
 				.getResultList();
 	}
 
@@ -181,8 +191,24 @@ public class BookRepositoryJpa implements BookRepository {
 				.setParameter("names", List.of(firstName, lastName))
 				.getResultList();
 
-		return authors.stream()
+		var books = authors.stream()
 				.flatMap(a -> a.getBooks().stream())
 				.collect(Collectors.toList());
+
+		books = em.createQuery(
+						"select distinct b from Book b " +
+								"left join fetch b.genres " +
+								"where b in :books", Book.class)
+				.setParameter("books", books)
+				.getResultList();
+
+		books = em.createQuery(
+						"select distinct b from Book b " +
+								"left join fetch b.authors " +
+								"where b in :books", Book.class)
+				.setParameter("books", books)
+				.getResultList();
+
+		return books;
 	}
 }

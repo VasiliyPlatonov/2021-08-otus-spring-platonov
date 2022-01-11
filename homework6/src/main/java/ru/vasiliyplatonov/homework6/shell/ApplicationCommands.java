@@ -35,28 +35,21 @@ public class ApplicationCommands {
 
 		switch (filterName) {
 			case "all": {
-				return bookService.getAll().toString();
-//				return bookTableRenderer.render(
-//						bookService.getAll());
+				return bookTableRenderer.render(
+						bookService.getAll());
 			}
 			case "-id": {
-				return bookService.getById(Long.parseLong(filterValue)).toString();
-//				return bookTableRenderer.render(
-//						bookService.getById(Long.parseLong(filterValue)));
+				return bookTableRenderer.render(
+						bookService.getByIdFullyCompleted(Long.parseLong(filterValue)));
 			}
 			case "-genre": {
-
-				return bookService.getByGenreName(filterValue).toString();
-
-//				return bookTableRenderer.render(
-//						bookService.getByGenreName(filterValue));
+				return bookTableRenderer.render(
+						bookService.getByGenreName(filterValue));
 			}
 			case "-author": {
 				val fullNameArr = filterValue.split(" ");
-//				return bookTableRenderer.render(
-//						bookService.getByAuthorFirstNameAndLastName(fullNameArr[0], fullNameArr[1]));
-
-				return bookService.getByAuthorFirstNameAndLastName(fullNameArr[0], fullNameArr[1]).toString();
+				return bookTableRenderer.render(
+						bookService.getByAuthorFirstNameAndLastName(fullNameArr[0], fullNameArr[1]));
 			}
 			default:
 				return "Unsupported.\nUsing: book show [-id|-genre|-author <filterValue>]";

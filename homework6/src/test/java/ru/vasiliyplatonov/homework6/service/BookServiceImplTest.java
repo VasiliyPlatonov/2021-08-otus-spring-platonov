@@ -87,7 +87,6 @@ class BookServiceImplTest {
 		assertThat(actualBooks)
 				.hasSizeGreaterThan(0)
 				.usingRecursiveComparison()
-				.ignoringFields("authors", "genres")
 				.isEqualTo(EXPECTED_AUTHOR_1.getBooks());
 	}
 

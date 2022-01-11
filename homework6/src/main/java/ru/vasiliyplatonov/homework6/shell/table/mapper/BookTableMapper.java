@@ -4,10 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.springframework.shell.table.*;
 import org.springframework.stereotype.Service;
+import ru.vasiliyplatonov.homework6.domain.Author;
 import ru.vasiliyplatonov.homework6.domain.Book;
-import ru.vasiliyplatonov.homework6.shell.table.formatter.AuthorFormatter;
-import ru.vasiliyplatonov.homework6.shell.table.formatter.AuthorsCollectionFormatter;
-import ru.vasiliyplatonov.homework6.shell.table.formatter.GenreFormatter;
+import ru.vasiliyplatonov.homework6.domain.Genre;
+import ru.vasiliyplatonov.homework6.shell.table.formatter.CollectionFormatterBuilder;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -17,43 +17,70 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BookTableMapper implements TableMapper<Book> {
 
-    private final AuthorFormatter authorFormatter;
-    private final GenreFormatter genreFormatter;
-    private final AuthorsCollectionFormatter authorsFormatter;
+//    private final AuthorsCollectionFormatter authorsFormatter;
+//    private final GenresCollectionFormatter genresFormatter;
 
-    @Override
-    public Table mapToTable(List<Book> books) {
+	private final CollectionFormatterBuilder collectionFormatterBuilder;
 
-        LinkedHashMap<String, Object> headers = new LinkedHashMap<>();
-        headers.put("id", "Id");
-        headers.put("title", "Title");
-        headers.put("authors", "Authors");
-        headers.put("genres", "Genres");
 
-        return buildTable(new BeanListTableModel<>(books, headers));
-    }
+	@Override
+	public Table mapToTable(List<Book> books) {
 
-    @Override
-    public Table mapToTable(Book book) {
-        val bookData = new Object[][]{
-                {"Id", String.valueOf(book.getId())},
-                {"Title", book.getTitle()},
-                {"Authors", book.getAuthors()},
-//                {"Genres", book.getGenres()},
-        };
+		LinkedHashMap<String, Object> headers = new LinkedHashMap<>();
+		headers.put("id", "Id");
+		headers.put("title", "Title");
+		headers.put("authors", "Authors");
+		headers.put("genres", "Genres");
 
-        return buildTable(new ArrayTableModel(bookData));
-    }
+		return buildTable(new BeanListTableModel<>(books, headers));
+	}
 
-    private Table buildTable(TableModel tableModel) {
-        TableBuilder tableBuilder = new TableBuilder(tableModel);
-//        tableBuilder.on(CellMatchers.ofType(Author.class)).addFormatter(authorFormatter);
-//        tableBuilder.on(CellMatchers.ofType(Genre.class)).addFormatter(genreFormatter);
-        tableBuilder.on(CellMatchers.ofType(Collection.class)).addFormatter(authorsFormatter);
-//        tableBuilder.on(CellMatchers.column(4)).addFormatter(genreFormatter);
-        tableBuilder.addHeaderBorder(BorderStyle.fancy_double);
-        tableBuilder.addInnerBorder(BorderStyle.fancy_light);
+	@Override
+	public Table mapToTable(Book book) {
+		val bookData = new Object[][]{
+				{"Id", String.valueOf(book.getId())},
+				{"Title", book.getTitle()},
+				{"Authors", book.getAuthors()},
+				{"Genres", book.getGenres()},
+		};
 
-        return tableBuilder.build();
-    }
+		return buildTable(new ArrayTableModel(bookData));
+	}
+
+	private Table buildTable(TableModel tableModel) {
+		val tableBuilder = new TableBuilder(tableModel);
+
+		val authorsFormatter = collectionFormatterBuilder.build(
+				author -> ((Author) author).getFirstName() + " " + ((Author) author).getLastName() + "\n");
+
+		val genresFormatter = collectionFormatterBuilder.build(
+				o -> ((Genre) o).getName() + "\n"
+		);
+
+		tableBuilder.on(getTypedCollectionMatcher(Genre.class)).addFormatter(genresFormatter);
+		tableBuilder.on(getTypedCollectionMatcher(Author.class)).addFormatter(authorsFormatter);
+
+		tableBuilder.addHeaderBorder(BorderStyle.fancy_double);
+		tableBuilder.addInnerBorder(BorderStyle.fancy_light);
+
+		return tableBuilder.build();
+	}
+
+
+	private static CellMatcher getTypedCollectionMatcher(Class<?> clazz) {
+		return (row, column, model) -> {
+			val value = model.getValue(row, column);
+			val isCollection = Collection.class.isAssignableFrom(value.getClass());
+
+			if (isCollection) {
+				val iterator = ((Collection<?>) value).iterator();
+				if (iterator.hasNext()) {
+					val collectionItem = iterator.next();
+					return clazz.isAssignableFrom(collectionItem.getClass());
+				}
+			}
+			return false;
+		};
+	}
+
 }
