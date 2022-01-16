@@ -87,7 +87,9 @@ class BookCommentRepositoryJpaTest {
 	void shouldCorrectDeleteBookCommentById() {
 		val deletedCommentId = EXPECTED_BOOK_COMMENT_1.getId();
 
-		commentRepo.delete(deletedCommentId);
+		val bookComment = em.find(BookComment.class, deletedCommentId);
+
+		commentRepo.delete(bookComment);
 
 		em.flush();
 		em.clear();
@@ -101,9 +103,12 @@ class BookCommentRepositoryJpaTest {
 	@DisplayName("should correct update book comment by id")
 	void shouldCorrectUpdateBookCommentById() {
 		val existingCommentId = EXPECTED_BOOK_COMMENT_1.getId();
-		val someNewText = "someNewText";
 
-		commentRepo.update(existingCommentId, someNewText);
+		val bookComment = em.find(BookComment.class, existingCommentId);
+		val someNewText = "some new text";
+		bookComment.setText(someNewText);
+
+		commentRepo.update(bookComment);
 
 		em.flush();
 		em.clear();

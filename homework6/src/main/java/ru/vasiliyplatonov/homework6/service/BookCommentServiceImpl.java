@@ -8,6 +8,7 @@ import ru.vasiliyplatonov.homework6.domain.BookComment;
 import ru.vasiliyplatonov.homework6.repository.BookCommentRepository;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -43,13 +44,17 @@ public class BookCommentServiceImpl implements BookCommentService {
 
 	@Override
 	@Transactional
-	public void delete(long id) {
-		bookCommentRepository.delete(id);
+	public void delete(long id) throws NoSuchElementException {
+		val comment = bookCommentRepository.getById(id).orElseThrow();
+		bookCommentRepository.delete(comment);
 	}
 
 	@Override
 	@Transactional
 	public void update(long id, String text) {
-		bookCommentRepository.update(id, text);
+		val comment = bookCommentRepository.getById(id).orElseThrow();
+		comment.setText(text);
+
+		bookCommentRepository.update(comment);
 	}
 }

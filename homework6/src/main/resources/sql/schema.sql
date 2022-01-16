@@ -18,40 +18,35 @@ CREATE TABLE authors
     last_name  VARCHAR(255)
 );
 
---     todo: что делать с таблицей books_authors если из этой таблицы удаляется книга?
 CREATE TABLE books
 (
     id    IDENTITY     NOT NULL PRIMARY KEY,
     title VARCHAR(255) NOT NULL
---     FOREIGN KEY (author_id) REFERENCES authors (id)
---         ON DELETE CASCADE
---         ON UPDATE CASCADE,
---     FOREIGN KEY (genre_id) REFERENCES genres (id)
---         ON DELETE CASCADE
---         ON UPDATE CASCADE,
---     CONSTRAINT unique_book UNIQUE (title, author_id)
-
 );
 
 CREATE TABLE book_comments
 (
     id      IDENTITY NOT NULL PRIMARY KEY,
     text    VARCHAR  NOT NULL,
-    book_id BIGINT NOT NULL,
+    book_id BIGINT   NOT NULL,
     FOREIGN KEY (book_id) REFERENCES books (id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
 
 
---     todo: как обеспечить уникальность (название книги && авторы)?
 CREATE TABLE books_authors
 (
     book_id   BIGINT NOT NULL,
     author_id BIGINT NOT NULL,
     PRIMARY KEY (book_id, author_id),
-    FOREIGN KEY (book_id) REFERENCES books (id),
+    FOREIGN KEY (book_id) REFERENCES books (id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
     FOREIGN KEY (author_id) REFERENCES authors (id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    UNIQUE (book_id, author_id)
 );
 
 

@@ -35,6 +35,7 @@ public class GenreRepositoryJpa implements GenreRepository {
 		}
 	}
 
+	//todo
 	@Override
 	public List<Genre> getAll() {
 		return null;

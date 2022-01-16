@@ -1,14 +1,12 @@
 package ru.vasiliyplatonov.homework6.repository;
 
 import lombok.AllArgsConstructor;
-import lombok.val;
 import org.springframework.stereotype.Repository;
 import ru.vasiliyplatonov.homework6.domain.BookComment;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Repository
@@ -20,10 +18,10 @@ public class BookCommentRepositoryJpa implements BookCommentRepository {
 
 	@Override
 	public Optional<BookComment> getById(long id) {
-		val graph = em.getEntityGraph("bookComment.book");
+//		val graph = em.getEntityGraph("bookComment.book");
 
 		return Optional.ofNullable(
-				em.find(BookComment.class, id, Map.of("javax.persistence.fetchgraph", graph))
+				em.find(BookComment.class, id)
 		);
 	}
 
@@ -61,15 +59,12 @@ public class BookCommentRepositoryJpa implements BookCommentRepository {
 	}
 
 	@Override
-	public void delete(long id) {
-		em.createQuery("delete from BookComment bc where bc.id = :id")
-				.setParameter("id", id)
-				.executeUpdate();
+	public void delete(BookComment bookComment) {
+		em.remove(bookComment);
 	}
 
 	@Override
-	public void update(long id, String text) {
-		val bookComment = em.find(BookComment.class, id);
-		bookComment.setText(text);
+	public void update(BookComment comment) {
+		em.merge(comment);
 	}
 }

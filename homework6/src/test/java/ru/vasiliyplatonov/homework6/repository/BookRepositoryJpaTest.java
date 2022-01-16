@@ -207,36 +207,6 @@ class BookRepositoryJpaTest {
 				.isEqualTo(actualBook);
 	}
 
-	@Test
-	@DisplayName("should correct delete book by id")
-	void shouldCorrectDeleteBookById() {
-		val bookId = EXPECTED_BOOK_1.getId();
-
-		bookRepository.deleteById(bookId);
-
-		em.flush();
-		em.clear();
-
-		val actualBook = em.find(Book.class, bookId);
-
-		assertThat(actualBook).isNull();
-	}
-
-	@Test
-	@DisplayName("should correct delete book by title")
-	void shouldCorrectDeleteBookByTitle() {
-		val bookId = EXPECTED_BOOK_1.getId();
-		val bookTitle = em.find(Book.class, bookId).getTitle();
-
-		bookRepository.deleteByTitle(bookTitle);
-
-		em.flush();
-		em.clear();
-
-		val actualBook = em.find(Book.class, bookId);
-
-		assertThat(actualBook).isNull();
-	}
 
 	@Test
 	@DisplayName("should correct delete all books in list")

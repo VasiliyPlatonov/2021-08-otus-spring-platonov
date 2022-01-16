@@ -19,13 +19,9 @@ public interface BookRepository {
 
 	Book add(Book book);
 
-	void deleteById(long id);
-
 	void delete(List<Book> books);
 
 	void delete(Book book);
-
-	void deleteByTitle(String title);
 
 	void update(Book book);
 

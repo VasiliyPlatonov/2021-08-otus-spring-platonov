@@ -39,7 +39,7 @@ public class Book {
 	@JoinTable(name = "books_genres",
 			joinColumns = @JoinColumn(name = "book_id"),
 			inverseJoinColumns = @JoinColumn(name = "genre_id"))
-	private List<Genre> genres; // For unidirectional collections, Sets are the best choice because they generate the most efficient SQL statements.
+	private List<Genre> genres;
 
 	public Book(String title, List<Author> authors, List<Genre> genres) {
 		this.title = title;

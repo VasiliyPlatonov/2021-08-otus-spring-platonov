@@ -15,7 +15,7 @@ public interface BookCommentRepository {
 
 	BookComment add(BookComment bookComment);
 
-	void delete(long id);
+	void delete(BookComment bookComment);
 
-	void update(long id, String text);
+	void update(BookComment comment);
 }

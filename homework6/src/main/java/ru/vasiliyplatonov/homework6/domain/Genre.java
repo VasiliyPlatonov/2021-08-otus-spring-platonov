@@ -21,7 +21,7 @@ public class Genre {
 	private Long id;
 
 	@NaturalId(mutable = true)
-	@Column(name = "name", unique = true)
+	@Column(name = "name", unique = true, nullable = false)
 	private String name;
 
 	public Genre(String name) {

@@ -16,6 +16,7 @@ import ru.vasiliyplatonov.homework6.shell.updater.BookInteractiveUpdater;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.NoSuchElementException;
 
 @ShellComponent
 @RequiredArgsConstructor
@@ -67,30 +68,19 @@ public class ApplicationCommands {
 
 
 	@ShellMethod(value = "Delete book", key = {"book-delete"}, group = "book", prefix = "-")
-	public String deleteBook(@ShellOption(help = "Possible values are: '-id', '-title'", defaultValue = "-title") String filterName,
-	                         String filterValue) {
-
-		switch (filterName) {
-			case "-title": {
-				bookService.deleteByTitle(filterValue);
-			}
-			break;
-
-			case "-id": {
-				bookService.deleteById(Long.parseLong(filterValue));
-			}
-			break;
-
-			default:
-				return "Unsupported.\nUsing: book delete [-id|-title <filterValue>]";
+	public String deleteBook(@ShellOption(help = "Possible values are: '-id'", defaultValue = "-id") Long id) {
+		try {
+			bookService.deleteById(id);
+			return "Success";
+		} catch (NoSuchElementException e) {
+			return "There is no book comment with the id " + id;
 		}
-		return "Success";
 	}
 
 	@ShellMethod(value = "Update book", key = {"book-update"}, group = "book", prefix = "-")
-	public String updateBook(@NotBlank String id) {
+	public String updateBook(@NotBlank Long id) {
 
-		val book = bookService.getByIdFullyCompleted(Long.parseLong(id));
+		val book = bookService.getByIdFullyCompleted(id);
 		ioService.outLine(book.toString());
 
 		val updatedBook = bookInteractiveUpdater.update(book);
@@ -121,15 +111,22 @@ public class ApplicationCommands {
 
 	@ShellMethod(value = "Delete book`s comment", key = {"comment-delete"}, group = "book comments", prefix = "-")
 	public String deleteBookComments(@NotNull @ShellOption(help = "comment`s id") Long id) {
-		bookCommentService.delete(id);
-
-		return "Success";
+		try {
+			bookCommentService.delete(id);
+			return "Success";
+		} catch (NoSuchElementException e) {
+			return "There is no book comment with the id " + id;
+		}
 	}
 
 	@ShellMethod(value = "Update book`s comment", key = {"comment-update"}, group = "book comments", prefix = "-")
 	public String updateBookComments(@NotNull @ShellOption(help = "comment`s id") Long id, @NotBlank String text) {
-		bookCommentService.update(id, text);
+		try {
+			bookCommentService.update(id, text);
+			return "Success";
+		} catch (NoSuchElementException e) {
+			return "There is no book comment with the id " + id;
+		}
 
-		return "Success";
 	}
 }

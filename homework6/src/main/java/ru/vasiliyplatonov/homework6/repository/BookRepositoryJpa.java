@@ -10,7 +10,6 @@ import ru.vasiliyplatonov.homework6.domain.Genre;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -22,8 +21,8 @@ public class BookRepositoryJpa implements BookRepository {
 	@PersistenceContext
 	private final EntityManager em;
 
-	private final AuthorRepository authorRepository;
-	private final GenreRepository genreRepository;
+//	private final AuthorRepository authorRepository;
+//	private final GenreRepository genreRepository;
 
 
 	@Override
@@ -117,39 +116,53 @@ public class BookRepositoryJpa implements BookRepository {
 		val authors = book.getAuthors();
 		val genres = book.getGenres();
 
-		val persistBook = new Book(book.getTitle(), new ArrayList<>(), new ArrayList<>());
-
-		authors.forEach(author -> {
-			author = authorRepository
-					.getByFirstNameAndLastName(author.getFirstName(), author.getLastName())
-					.orElse(author);
-
-			persistBook.getAuthors().add(author);
-			author.getBooks().add(persistBook);
+//		val persistBook = new Book(book.getTitle(), new ArrayList<>(), new ArrayList<>());
+//
+//		authors.forEach(author -> {
+//			author = authorRepository
+//					.getByFirstNameAndLastName(author.getFirstName(), author.getLastName())
+//					.orElse(author);
+//
+//			persistBook.getAuthors().add(author);
+//			author.getBooks().add(persistBook);
+//		});
+//
+//		genres.forEach(genre -> {
+//			genre = genreRepository
+//					.getByName(genre.getName())
+//					.orElse(genre);
+//
+//			persistBook.getGenres().add(genre);
+//		});
+//
+//		authors.forEach(a -> {
+//			if (a.getId() == null) {
+//				em.persist(a);
+//			} else {
+//				em.merge(a);
+//			}
+//		});
+//
+		genres.forEach(g -> {
+			if (g.getId() == null) {
+				try {
+					em.persist(g);
+				} catch (Exception e) {
+					em.merge(g);
+				}
+			} else {
+				em.merge(g);
+			}
 		});
 
-		genres.forEach(genre -> {
-			genre = genreRepository
-					.getByName(genre.getName())
-					.orElse(genre);
-
-			persistBook.getGenres().add(genre);
-		});
 
 		if (book.getId() == null) {
-			em.persist(persistBook);
-			return persistBook;
+			em.persist(book);
+			return book;
 		} else {
-			persistBook.setId(book.getId());
-			return em.merge(persistBook);
+//			persistBook.setId(book.getId());
+			return em.merge(book);
 		}
-	}
-
-	@Override
-	public void deleteById(long id) {
-		em.createQuery("delete from Book b where b.id = :id")
-				.setParameter("id", id)
-				.executeUpdate();
 	}
 
 	@Override
@@ -163,16 +176,7 @@ public class BookRepositoryJpa implements BookRepository {
 
 	@Override
 	public void delete(Book book) {
-		em.createQuery("delete from Book b where b.id = :id")
-				.setParameter("id", book.getId())
-				.executeUpdate();
-	}
-
-	@Override
-	public void deleteByTitle(String title) {
-		em.createQuery("delete from Book b where b.title = :title")
-				.setParameter("title", title)
-				.executeUpdate();
+		em.remove(book);
 	}
 
 	@Override

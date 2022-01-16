@@ -168,20 +168,6 @@ class BookServiceImplTest {
 		assertThat(actualBook).isNull();
 	}
 
-	@Test
-	@Transactional
-	@Rollback
-	@DisplayName("should correct delete book by title")
-	void shouldCorrectDeleteBookByTitle() {
-		val bookId = EXPECTED_BOOK_1.getId();
-		val bookTitle = EXPECTED_BOOK_1.getTitle();
-
-		bookService.deleteByTitle(bookTitle);
-
-		val actualBook = bookService.getById(bookId);
-
-		assertThat(actualBook).isNull();
-	}
 }
 
 

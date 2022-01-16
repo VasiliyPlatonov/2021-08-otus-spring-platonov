@@ -9,6 +9,7 @@ import ru.vasiliyplatonov.homework6.domain.Genre;
 import ru.vasiliyplatonov.homework6.repository.BookRepository;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -73,15 +74,15 @@ public class BookServiceImpl implements BookService {
 	}
 
 	@Override
-	@Transactional
-	public void deleteById(long id) {
-		bookRepository.deleteById(id);
+	public void delete(Book book) {
+		bookRepository.delete(book);
 	}
 
 	@Override
 	@Transactional
-	public void deleteByTitle(String title) {
-		bookRepository.deleteByTitle(title);
+	public void deleteById(long id) throws NoSuchElementException {
+		val book = bookRepository.getById(id).orElseThrow();
+		bookRepository.delete(book);
 	}
 
 }
