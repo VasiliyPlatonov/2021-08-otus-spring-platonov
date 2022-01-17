@@ -21,9 +21,6 @@ public class BookRepositoryJpa implements BookRepository {
 	@PersistenceContext
 	private final EntityManager em;
 
-//	private final AuthorRepository authorRepository;
-//	private final GenreRepository genreRepository;
-
 
 	@Override
 	public Optional<Book> getById(long id) {
@@ -113,54 +110,10 @@ public class BookRepositoryJpa implements BookRepository {
 
 	@Override
 	public Book add(Book book) {
-		val authors = book.getAuthors();
-		val genres = book.getGenres();
-
-//		val persistBook = new Book(book.getTitle(), new ArrayList<>(), new ArrayList<>());
-//
-//		authors.forEach(author -> {
-//			author = authorRepository
-//					.getByFirstNameAndLastName(author.getFirstName(), author.getLastName())
-//					.orElse(author);
-//
-//			persistBook.getAuthors().add(author);
-//			author.getBooks().add(persistBook);
-//		});
-//
-//		genres.forEach(genre -> {
-//			genre = genreRepository
-//					.getByName(genre.getName())
-//					.orElse(genre);
-//
-//			persistBook.getGenres().add(genre);
-//		});
-//
-//		authors.forEach(a -> {
-//			if (a.getId() == null) {
-//				em.persist(a);
-//			} else {
-//				em.merge(a);
-//			}
-//		});
-//
-		genres.forEach(g -> {
-			if (g.getId() == null) {
-				try {
-					em.persist(g);
-				} catch (Exception e) {
-					em.merge(g);
-				}
-			} else {
-				em.merge(g);
-			}
-		});
-
-
 		if (book.getId() == null) {
 			em.persist(book);
 			return book;
 		} else {
-//			persistBook.setId(book.getId());
 			return em.merge(book);
 		}
 	}

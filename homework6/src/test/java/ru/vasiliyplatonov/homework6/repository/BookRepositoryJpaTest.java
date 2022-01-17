@@ -20,7 +20,7 @@ import static ru.vasiliyplatonov.homework6.ExpectedDataHolder.*;
 
 @DataJpaTest
 @DisplayName("Book JPA repository ")
-@Import({BookRepositoryJpa.class, GenreRepositoryJpa.class, AuthorRepositoryJpa.class}) //todo
+@Import({BookRepositoryJpa.class, GenreRepositoryJpa.class, AuthorRepositoryJpa.class})
 class BookRepositoryJpaTest {
 
 	private static final int EXPECTED_QUERIES_COUNT = 2;
@@ -122,17 +122,17 @@ class BookRepositoryJpaTest {
 	}
 
 	@Test
-	@DisplayName("should correct persist book with existing and not author and genre")
+	@DisplayName("should correct persist book with existing authors and genres")
 	void shouldCorrectPersistBook() {
-		val existingAuthor = new Author(EXPECTED_AUTHOR_1.getFirstName(), EXPECTED_AUTHOR_1.getLastName());
-		val notExistingAuthor = new Author("Name", "LastName");
-		val existingGenre = new Genre(EXPECTED_GENRE_1.getName());
-		val notExistingGenre = new Genre("new genre");
+		val author1 = em.find(Author.class, 1L);
+		val author2 = em.find(Author.class, 2L);
+		val genre1 = em.find(Genre.class, 1L);
+		val genre2 = em.find(Genre.class, 2L);
 
 		val expectedBook = bookRepository.add(
 				new Book("Some new title",
-						List.of(existingAuthor, notExistingAuthor),
-						List.of(existingGenre, notExistingGenre))
+						List.of(author1, author2),
+						List.of(genre1, genre2))
 		);
 
 		em.flush();
@@ -147,34 +147,6 @@ class BookRepositoryJpaTest {
 				.usingRecursiveComparison()
 				.ignoringFields("id", "authors.books")
 				.isEqualTo(expectedBook);
-	}
-
-	@Test
-	@DisplayName("should correct persist book with new authors and genres")
-	void shouldCorrectPersistBookWithNewAuthorsAndGenres() {
-
-		val newAuthor1 = new Author(null, "New", "Author1");
-		val newAuthor2 = new Author(null, "New", "Author2");
-		val newGenre1 = new Genre("New genre1");
-		val newGenre2 = new Genre("New genre2");
-
-		val expectedAuthors = List.of(newAuthor1, newAuthor2);
-		val expectedGenres = List.of(newGenre1, newGenre2);
-
-		val expectedTitle = "Some new title";
-		val expectedBook = new Book(expectedTitle, expectedAuthors, expectedGenres);
-
-		bookRepository.add(expectedBook);
-
-		em.flush();
-		em.clear();
-
-		val actualBooks = bookRepository.getByTitle(expectedTitle);
-		assertThat(actualBooks)
-				.hasSize(1)
-				.usingRecursiveComparison()
-				.ignoringFields("id")
-				.isEqualTo(List.of(expectedBook));
 	}
 
 	@Test
