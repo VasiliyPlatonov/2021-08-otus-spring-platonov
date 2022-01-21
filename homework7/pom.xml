@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.6.2</version>
+        <version>2.5.6</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -14,8 +14,8 @@
     <artifactId>homework7</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
-    <name>homework7</name>
-    <description>homework7</description>
+    <name>ru.vasiliyplatonov.homework7</name>
+    <description>ru.vasiliyplatonov.homework7</description>
 
     <properties>
         <java.version>11</java.version>
@@ -38,7 +38,6 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <scope>runtime</scope>
         </dependency>
 
         <dependency>

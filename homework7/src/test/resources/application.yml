@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+
+  sql:
+    init:
+      schema-locations: sql/schema.sql
+      mode: always
+
+  jpa:
+    show-sql: true
+
+    properties:
+      hibernate:
+        format_sql: true
+
+    hibernate:
+      ddl-auto: validate
+
+  shell:
+    interactive:
+      enabled: false
