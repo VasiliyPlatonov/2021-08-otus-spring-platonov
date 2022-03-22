@@ -1,6 +1,8 @@
 package ru.vasiliyplatonov.homework6.service;
 
+import org.springframework.transaction.annotation.Transactional;
 import ru.vasiliyplatonov.homework6.domain.Book;
+import ru.vasiliyplatonov.homework6.domain.BookComment;
 import ru.vasiliyplatonov.homework6.domain.Genre;
 
 import java.util.List;
@@ -28,4 +30,7 @@ public interface BookService {
 	void delete(Book book);
 
 	void deleteById(long id);
+
+	@Transactional
+	List<BookComment> getBookCommentsByBookId(Long bookId);
 }

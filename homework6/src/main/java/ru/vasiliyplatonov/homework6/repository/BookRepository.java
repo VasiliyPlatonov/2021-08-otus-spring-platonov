@@ -1,6 +1,7 @@
 package ru.vasiliyplatonov.homework6.repository;
 
 import ru.vasiliyplatonov.homework6.domain.Book;
+import ru.vasiliyplatonov.homework6.domain.BookComment;
 import ru.vasiliyplatonov.homework6.domain.Genre;
 
 import java.util.List;
@@ -28,4 +29,6 @@ public interface BookRepository {
 	List<Book> getByGenreName(String genreName);
 
 	List<Book> getByAuthorFirstNameAndLastName(String firstName, String lastName);
+
+	List<BookComment> getBookCommentsByBookId(long bookId);
 }

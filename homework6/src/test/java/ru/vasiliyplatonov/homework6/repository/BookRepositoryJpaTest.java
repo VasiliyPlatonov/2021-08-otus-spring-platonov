@@ -199,5 +199,19 @@ class BookRepositoryJpaTest {
 		assertThat(actualBook2).isNull();
 	}
 
+	@Test
+	@DisplayName("should get all comments of book")
+	void shouldGetAllCommentsOfBookByBookId() {
+		val expectedComments =
+				List.of(EXPECTED_BOOK_COMMENT_1,
+						EXPECTED_BOOK_COMMENT_2,
+						EXPECTED_BOOK_COMMENT_3);
 
+		val actualComments = bookRepository.getBookCommentsByBookId(EXPECTED_BOOK_1.getId());
+
+		assertThat(actualComments)
+				.usingRecursiveComparison()
+				.ignoringFieldsMatchingRegexes("book.*")
+				.isEqualTo(expectedComments);
+	}
 }

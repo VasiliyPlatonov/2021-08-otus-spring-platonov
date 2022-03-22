@@ -5,12 +5,14 @@ import lombok.val;
 import org.springframework.stereotype.Repository;
 import ru.vasiliyplatonov.homework6.domain.Author;
 import ru.vasiliyplatonov.homework6.domain.Book;
+import ru.vasiliyplatonov.homework6.domain.BookComment;
 import ru.vasiliyplatonov.homework6.domain.Genre;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -167,5 +169,12 @@ public class BookRepositoryJpa implements BookRepository {
 				.getResultList();
 
 		return books;
+	}
+
+	@Override
+	public List<BookComment> getBookCommentsByBookId(long bookId) {
+		val graph = em.getEntityGraph("book.comments");
+		val book = em.find(Book.class, bookId, Map.of("javax.persistence.fetchgraph", graph));
+		return book.getBookComments();
 	}
 }

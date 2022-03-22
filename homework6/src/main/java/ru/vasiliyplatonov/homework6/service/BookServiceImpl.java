@@ -5,6 +5,7 @@ import lombok.val;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.vasiliyplatonov.homework6.domain.Book;
+import ru.vasiliyplatonov.homework6.domain.BookComment;
 import ru.vasiliyplatonov.homework6.domain.Genre;
 import ru.vasiliyplatonov.homework6.repository.AuthorRepository;
 import ru.vasiliyplatonov.homework6.repository.BookRepository;
@@ -112,4 +113,9 @@ public class BookServiceImpl implements BookService {
 		bookRepository.delete(book);
 	}
 
+	@Override
+	@Transactional(readOnly = true)
+	public List<BookComment> getBookCommentsByBookId(Long bookId) {
+		return bookRepository.getBookCommentsByBookId(bookId);
+	}
 }

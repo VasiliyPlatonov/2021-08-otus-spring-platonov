@@ -23,6 +23,7 @@ class BookServiceImplTest {
 	@Autowired
 	private BookServiceImpl bookService;
 
+
 	@Test
 	@DisplayName("should return all books with full data")
 	void shouldReturnAllBooks() {
@@ -166,6 +167,26 @@ class BookServiceImplTest {
 		val actualBook = bookService.getById(bookId);
 
 		assertThat(actualBook).isNull();
+	}
+
+
+	@Test
+	@DisplayName("should get all comments of book")
+	void shouldGetAllCommentsOfBookByBookId() {
+		val expectedComments =
+				List.of(EXPECTED_BOOK_COMMENT_1,
+						EXPECTED_BOOK_COMMENT_2,
+						EXPECTED_BOOK_COMMENT_3);
+
+		val actualComments = bookService.getBookCommentsByBookId(EXPECTED_BOOK_1.getId());
+
+		System.out.println("actualComments");
+		System.out.println(actualComments);
+
+		assertThat(actualComments)
+				.usingRecursiveComparison()
+				.ignoringFieldsMatchingRegexes("book.*")
+				.isEqualTo(expectedComments);
 	}
 
 }

@@ -19,6 +19,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @NamedEntityGraph(name = "book.authors", attributeNodes = @NamedAttributeNode(value = "authors"))
 @NamedEntityGraph(name = "book.genres", attributeNodes = @NamedAttributeNode(value = "genres"))
+@NamedEntityGraph(name = "book.comments", attributeNodes = @NamedAttributeNode(value = "bookComments"))
 public class Book {
 
 	@Id
@@ -41,7 +42,21 @@ public class Book {
 			inverseJoinColumns = @JoinColumn(name = "genre_id"))
 	private List<Genre> genres;
 
+
+	@OneToMany(
+			mappedBy = "book",
+			cascade = CascadeType.ALL,
+			orphanRemoval = true)
+	private List<BookComment> bookComments;
+
 	public Book(String title, List<Author> authors, List<Genre> genres) {
+		this.title = title;
+		this.genres = genres;
+		this.authors = authors;
+	}
+
+	public Book(long id, String title, List<Author> authors, List<Genre> genres) {
+		this.id = id;
 		this.title = title;
 		this.genres = genres;
 		this.authors = authors;

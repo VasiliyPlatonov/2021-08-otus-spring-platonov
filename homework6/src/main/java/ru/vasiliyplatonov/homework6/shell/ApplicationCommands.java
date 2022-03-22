@@ -92,9 +92,9 @@ public class ApplicationCommands {
 
 
 	@ShellMethod(value = "Show book`s comments", key = {"comment-show"}, group = "book comments", prefix = "-")
-	public String showBookComments(@NotNull @ShellOption(help = "book`s id", value = {"-id", "-bookId"}) Long bookId,
-	                               @ShellOption(help = "Maximum number of comments", value = "-n", defaultValue = "10") int max) {
-		val comments = bookCommentService.getByBookId(bookId, max);
+	public String showBookComments(@NotNull @ShellOption(help = "book`s id", value = {"-id", "-bookId"}) Long bookId) {
+
+		val comments = bookService.getBookCommentsByBookId(bookId);
 		comments.forEach(ioService::outLine);
 
 		return "";

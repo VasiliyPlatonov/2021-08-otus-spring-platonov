@@ -18,8 +18,6 @@ public class BookCommentRepositoryJpa implements BookCommentRepository {
 
 	@Override
 	public Optional<BookComment> getById(long id) {
-//		val graph = em.getEntityGraph("bookComment.book");
-
 		return Optional.ofNullable(
 				em.find(BookComment.class, id)
 		);
