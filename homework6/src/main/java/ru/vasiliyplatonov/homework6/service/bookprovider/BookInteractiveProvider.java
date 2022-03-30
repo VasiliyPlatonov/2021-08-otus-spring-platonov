@@ -8,8 +8,8 @@ import ru.vasiliyplatonov.homework6.domain.Book;
 import ru.vasiliyplatonov.homework6.domain.Genre;
 import ru.vasiliyplatonov.homework6.service.ioservice.IOService;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -25,8 +25,8 @@ public class BookInteractiveProvider implements BookProvider {
 		return new Book(title, authors, genres);
 	}
 
-	public List<Genre> getGenres() {
-		var genres = new ArrayList<Genre>();
+	public Set<Genre> getGenres() {
+		var genres = new HashSet<Genre>();
 		var command = "+";
 
 		while (command.equals("+") || genres.isEmpty()) {
@@ -47,8 +47,8 @@ public class BookInteractiveProvider implements BookProvider {
 		return genres;
 	}
 
-	public List<Author> getAuthors() {
-		var authors = new ArrayList<Author>();
+	public Set<Author> getAuthors() {
+		var authors = new HashSet<Author>();
 		var command = "+";
 
 		while (command.equals("+") || authors.isEmpty()) {

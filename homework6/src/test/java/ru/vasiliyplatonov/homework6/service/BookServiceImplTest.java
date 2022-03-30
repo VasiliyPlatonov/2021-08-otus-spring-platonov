@@ -1,6 +1,7 @@
 package ru.vasiliyplatonov.homework6.service;
 
 import lombok.val;
+import org.assertj.core.api.recursive.comparison.RecursiveComparisonConfiguration;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import ru.vasiliyplatonov.homework6.domain.Book;
 import ru.vasiliyplatonov.homework6.domain.Genre;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static ru.vasiliyplatonov.homework6.ExpectedDataHolder.*;
@@ -40,7 +42,7 @@ class BookServiceImplTest {
 
 		assertThat(actualBook)
 				.usingRecursiveComparison()
-				.ignoringFields("authors", "genres")
+				.ignoringFields("authors", "genres", "bookComments")
 				.isEqualTo(EXPECTED_BOOK_1);
 	}
 
@@ -64,7 +66,7 @@ class BookServiceImplTest {
 		assertThat(actualBooks)
 				.hasSizeGreaterThan(0)
 				.usingRecursiveComparison()
-				.ignoringFields("authors", "genres")
+				.ignoringFields("authors", "genres", "bookComments")
 				.isEqualTo(List.of(EXPECTED_BOOK_1));
 	}
 
@@ -76,7 +78,7 @@ class BookServiceImplTest {
 		assertThat(actualBooks)
 				.hasSizeGreaterThan(0)
 				.usingRecursiveComparison()
-				.ignoringFields("authors", "genres")
+				.ignoringFields("authors", "genres", "bookComments")
 				.isEqualTo(List.of(EXPECTED_BOOK_1));
 	}
 
@@ -88,6 +90,7 @@ class BookServiceImplTest {
 		assertThat(actualBooks)
 				.hasSizeGreaterThan(0)
 				.usingRecursiveComparison()
+				.ignoringFields("bookComments" , "authors.books")
 				.isEqualTo(EXPECTED_AUTHOR_1.getBooks());
 	}
 
@@ -99,7 +102,7 @@ class BookServiceImplTest {
 		assertThat(actualBooks)
 				.hasSizeGreaterThan(0)
 				.usingRecursiveComparison()
-				.ignoringFields("authors", "genres")
+				.ignoringFields("authors", "genres", "bookComments")
 				.isEqualTo(List.of(EXPECTED_BOOK_1));
 	}
 
@@ -109,8 +112,8 @@ class BookServiceImplTest {
 	@DisplayName("should correct persist book with a single and existing author and genre")
 	void shouldCorrectPersistBook() {
 		val expectedTitle = "Some new title";
-		val expectedAuthors = List.of(new Author(null, EXPECTED_AUTHOR_1.getFirstName(), EXPECTED_AUTHOR_1.getFirstName()));
-		val expectedGenres = List.of(new Genre(null, EXPECTED_GENRE_1.getName()));
+		val expectedAuthors = Set.of(new Author(null, EXPECTED_AUTHOR_1.getFirstName(), EXPECTED_AUTHOR_1.getFirstName()));
+		val expectedGenres = Set.of(new Genre(null, EXPECTED_GENRE_1.getName()));
 
 		val expectedBook = bookService.add(new Book(
 				expectedTitle,
@@ -134,8 +137,8 @@ class BookServiceImplTest {
 		val bookId = EXPECTED_BOOK_1.getId();
 		val expectedBook = bookService.getByIdFullyCompleted(bookId);
 
-		val existingAuthor = expectedBook.getAuthors().get(0);
-		val existingGenre = expectedBook.getGenres().get(0);
+		val existingAuthor = expectedBook.getAuthors().iterator().next();
+		val existingGenre = expectedBook.getGenres().iterator().next();
 		val notExistingAuthor = new Author("Name", "LastName");
 		val notExistingGenre = new Genre("new genre");
 
@@ -174,18 +177,19 @@ class BookServiceImplTest {
 	@DisplayName("should get all comments of book")
 	void shouldGetAllCommentsOfBookByBookId() {
 		val expectedComments =
-				List.of(EXPECTED_BOOK_COMMENT_1,
+				Set.of(EXPECTED_BOOK_COMMENT_1,
 						EXPECTED_BOOK_COMMENT_2,
 						EXPECTED_BOOK_COMMENT_3);
 
 		val actualComments = bookService.getBookCommentsByBookId(EXPECTED_BOOK_1.getId());
 
-		System.out.println("actualComments");
-		System.out.println(actualComments);
+		val comparisonConfiguration = RecursiveComparisonConfiguration.builder()
+				.withStrictTypeChecking(false)
+				.withIgnoredFieldsMatchingRegexes("book.*")
+				.build();
 
 		assertThat(actualComments)
-				.usingRecursiveComparison()
-				.ignoringFieldsMatchingRegexes("book.*")
+				.usingRecursiveComparison(comparisonConfiguration)
 				.isEqualTo(expectedComments);
 	}
 

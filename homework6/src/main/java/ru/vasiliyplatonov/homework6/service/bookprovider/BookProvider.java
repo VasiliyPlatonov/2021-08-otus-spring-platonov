@@ -4,15 +4,15 @@ import ru.vasiliyplatonov.homework6.domain.Author;
 import ru.vasiliyplatonov.homework6.domain.Book;
 import ru.vasiliyplatonov.homework6.domain.Genre;
 
-import java.util.List;
+import java.util.Set;
 
 public interface BookProvider {
 
 	Book getBook();
 
-	List<Genre> getGenres();
+	Set<Genre> getGenres();
 
-	List<Author> getAuthors();
+	Set<Author> getAuthors();
 
 	String getTitle();
 

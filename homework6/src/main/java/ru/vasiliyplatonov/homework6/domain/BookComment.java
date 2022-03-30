@@ -21,8 +21,8 @@ public class BookComment {
 	@Column(name = "text")
 	private String text;
 
-	@ManyToOne(optional = false, fetch = FetchType.LAZY)
-	@JoinColumn(name="book_id")
+	@ManyToOne(optional = false, fetch = FetchType.EAGER)
+	@JoinColumn(name = "book_id")
 	private Book book;
 
 
@@ -34,5 +34,26 @@ public class BookComment {
 	@Override
 	public String toString() {
 		return "id: " + id + ", text: " + text;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		BookComment bookComment = (BookComment) o;
+		if (null == id) return false;
+		return id.equals(bookComment.id);
+	}
+
+	@Override
+	public int hashCode() {
+		int hashCode = 17;
+		hashCode += (null != getId())
+				? getId().hashCode() * 31
+				: (null != getBook())
+				? getBook().hashCode()
+				: 0;
+
+		return hashCode;
 	}
 }

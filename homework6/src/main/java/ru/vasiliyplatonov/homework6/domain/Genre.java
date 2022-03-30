@@ -17,11 +17,11 @@ public class Genre {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@EqualsAndHashCode.Exclude
 	private Long id;
 
 	@NaturalId(mutable = true)
 	@Column(name = "name", unique = true, nullable = false)
+	@EqualsAndHashCode.Exclude
 	private String name;
 
 	public Genre(String name) {

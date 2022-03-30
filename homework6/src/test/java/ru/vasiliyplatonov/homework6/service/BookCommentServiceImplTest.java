@@ -9,7 +9,7 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import ru.vasiliyplatonov.homework6.domain.BookComment;
 
-import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static ru.vasiliyplatonov.homework6.ExpectedDataHolder.*;
@@ -28,13 +28,13 @@ class BookCommentServiceImplTest {
 	@DisplayName("should return all comments of book by book id")
 	void shouldReturnBookCommentByBookId() {
 		val existingBookId = EXPECTED_BOOK_1.getId();
-		val expectedComments = List.of(EXPECTED_BOOK_COMMENT_1, EXPECTED_BOOK_COMMENT_2, EXPECTED_BOOK_COMMENT_3);
+		val expectedComments = Set.of(EXPECTED_BOOK_COMMENT_1, EXPECTED_BOOK_COMMENT_2, EXPECTED_BOOK_COMMENT_3);
 
 		val actualComments = bookCommentService.getByBookId(existingBookId);
 
 		assertThat(actualComments)
 				.usingRecursiveComparison()
-				.ignoringFields("book.authors", "book.genres")
+				.ignoringFields("book.genres", "book.bookComments", "book.authors")
 				.isEqualTo(expectedComments);
 	}
 
@@ -43,13 +43,13 @@ class BookCommentServiceImplTest {
 	void shouldReturnSpecifiedCountOfBookComment() {
 		val max = 2;
 		val existingBookId = EXPECTED_BOOK_1.getId();
-		val expectedComments = List.of(EXPECTED_BOOK_COMMENT_1, EXPECTED_BOOK_COMMENT_2);
+		val expectedComments = Set.of(EXPECTED_BOOK_COMMENT_1, EXPECTED_BOOK_COMMENT_2);
 
 		val actualComments = bookCommentService.getByBookId(existingBookId, max);
 
 		assertThat(actualComments)
 				.usingRecursiveComparison()
-				.ignoringFields("book.authors", "book.genres")
+				.ignoringFields("book.genres", "book.bookComments", "book.authors")
 				.isEqualTo(expectedComments);
 	}
 

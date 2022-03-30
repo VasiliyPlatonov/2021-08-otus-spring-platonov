@@ -11,7 +11,7 @@ import ru.vasiliyplatonov.homework6.repository.AuthorRepository;
 import ru.vasiliyplatonov.homework6.repository.BookRepository;
 import ru.vasiliyplatonov.homework6.repository.GenreRepository;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -30,7 +30,7 @@ public class BookServiceImpl implements BookService {
 		val genres = book.getGenres();
 		val authors = book.getAuthors();
 
-		val persistBook = new Book(book.getTitle(), new ArrayList<>(), new ArrayList<>());
+		val persistBook = new Book(book.getTitle(), new HashSet<>(), new HashSet<>());
 
 		authors.forEach(author -> {
 			author = authorRepository
@@ -62,7 +62,13 @@ public class BookServiceImpl implements BookService {
 	@Override
 	@Transactional(readOnly = true)
 	public Book getByIdFullyCompleted(long id) {
-		return bookRepository.getByIdFullyCompleted(id).orElse(null);
+		final var book = bookRepository.getByIdFullyCompleted(id).orElse(null);
+
+		book.getGenres().forEach(Object::hashCode);
+		book.getBookComments().forEach(Object::hashCode);
+		book.getAuthors().forEach(Object::hashCode);
+
+		return book;
 	}
 
 	@Override

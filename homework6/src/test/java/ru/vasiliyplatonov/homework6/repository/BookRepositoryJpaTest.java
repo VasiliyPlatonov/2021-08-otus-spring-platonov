@@ -14,6 +14,7 @@ import ru.vasiliyplatonov.homework6.domain.Genre;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static ru.vasiliyplatonov.homework6.ExpectedDataHolder.*;
@@ -23,7 +24,7 @@ import static ru.vasiliyplatonov.homework6.ExpectedDataHolder.*;
 @Import({BookRepositoryJpa.class, GenreRepositoryJpa.class, AuthorRepositoryJpa.class})
 class BookRepositoryJpaTest {
 
-	private static final int EXPECTED_QUERIES_COUNT = 2;
+	private static final int EXPECTED_QUERIES_COUNT = 1;
 
 	@Autowired
 	private BookRepositoryJpa bookRepository;
@@ -75,10 +76,7 @@ class BookRepositoryJpaTest {
 	@Test
 	@DisplayName("should return book by id with all info")
 	void shouldReturnBookByIdWithAllInfo() {
-		System.out.println("--------------------------------------------------");
 		val actualBook = bookRepository.getByIdFullyCompleted(EXPECTED_BOOK_1.getId());
-		System.out.println("--------------------------------------------------");
-
 
 		assertThat(actualBook)
 				.usingRecursiveComparison()
@@ -131,8 +129,8 @@ class BookRepositoryJpaTest {
 
 		val expectedBook = bookRepository.add(
 				new Book("Some new title",
-						List.of(author1, author2),
-						List.of(genre1, genre2))
+						Set.of(author1, author2),
+						Set.of(genre1, genre2))
 		);
 
 		em.flush();
@@ -155,9 +153,9 @@ class BookRepositoryJpaTest {
 		val bookId = EXPECTED_BOOK_1.getId();
 		val expectedBook = em.find(Book.class, bookId);
 
-		val existingAuthor = expectedBook.getAuthors().get(0);
+		val existingAuthor = expectedBook.getAuthors().iterator().next();
 		val notExistingAuthor = new Author("Name", "LastName");
-		val existingGenre = expectedBook.getGenres().get(0);
+		val existingGenre = expectedBook.getGenres().iterator().next();
 		val notExistingGenre = new Genre("new genre");
 
 		existingAuthor.setFirstName("New name");
@@ -175,7 +173,7 @@ class BookRepositoryJpaTest {
 		assertThat(expectedBook)
 				.isNotNull()
 				.usingRecursiveComparison()
-				.ignoringFields("id", "authors.books", "authors.id", "genres.id")
+				.ignoringFields("id", "bookComments", "authors.books", "authors.id", "genres.id")
 				.isEqualTo(actualBook);
 	}
 
@@ -203,7 +201,7 @@ class BookRepositoryJpaTest {
 	@DisplayName("should get all comments of book")
 	void shouldGetAllCommentsOfBookByBookId() {
 		val expectedComments =
-				List.of(EXPECTED_BOOK_COMMENT_1,
+				Set.of(EXPECTED_BOOK_COMMENT_1,
 						EXPECTED_BOOK_COMMENT_2,
 						EXPECTED_BOOK_COMMENT_3);
 

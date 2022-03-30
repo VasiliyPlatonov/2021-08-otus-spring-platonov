@@ -2,8 +2,8 @@ package ru.vasiliyplatonov.homework6.repository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.val;
+import org.hibernate.annotations.QueryHints;
 import org.springframework.stereotype.Repository;
-import ru.vasiliyplatonov.homework6.domain.Author;
 import ru.vasiliyplatonov.homework6.domain.Book;
 import ru.vasiliyplatonov.homework6.domain.BookComment;
 import ru.vasiliyplatonov.homework6.domain.Genre;
@@ -11,6 +11,7 @@ import ru.vasiliyplatonov.homework6.domain.Genre;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -31,19 +32,13 @@ public class BookRepositoryJpa implements BookRepository {
 
 	@Override
 	public Optional<Book> getByIdFullyCompleted(long id) {
-
 		try {
 			var book = em.createQuery(
-							"select b from Book b " +
-									"left join fetch b.genres " +
+							"select distinct b from Book b " +
+									"join fetch b.genres " +
+									"join fetch b.authors " +
 									"where b.id = :id", Book.class)
-					.setParameter("id", id)
-					.getSingleResult();
-
-			book = em.createQuery(
-							"select b from Book b " +
-									"left join fetch b.authors " +
-									"where b.id = :id", Book.class)
+					.setHint(QueryHints.PASS_DISTINCT_THROUGH, false)
 					.setParameter("id", id)
 					.getSingleResult();
 
@@ -55,13 +50,11 @@ public class BookRepositoryJpa implements BookRepository {
 
 	@Override
 	public List<Book> getAll() {
-		val books = em
-				.createQuery("select b from Book b join fetch b.genres", Book.class)
-				.getResultList();
-
-		return em.createQuery(
+		return em
+				.createQuery("" +
 						"select b from Book b " +
-								"left join fetch b.authors", Book.class)
+						"join fetch b.genres " +
+						"join fetch b.authors  ", Book.class)
 				.getResultList();
 	}
 
@@ -74,39 +67,26 @@ public class BookRepositoryJpa implements BookRepository {
 
 	@Override
 	public List<Book> getByGenre(Genre genre) {
-		val books = em
+		return em
 				.createQuery(
 						"select distinct b from Book b " +
 								"left join fetch b.genres " +
+								"left join fetch b.authors " +
 								"where :genre member of b.genres", Book.class)
 				.setParameter("genre", genre)
-				.getResultList();
-
-		return em.createQuery(
-						"select b from Book b " +
-								"left join fetch b.authors " +
-								"where b in :books", Book.class)
-				.setParameter("books", books)
 				.getResultList();
 	}
 
 	@Override
 	public List<Book> getByGenreName(String genreName) {
-		val books = em
+		return em
 				.createQuery(
 						"select distinct b from Book b " +
 								"left join fetch b.genres " +
+								"left join fetch b.authors " +
 								"where (select g from Genre g where g.name = :genreName) " +
 								"member of b.genres", Book.class)
 				.setParameter("genreName", genreName)
-				.getResultList();
-
-
-		return em.createQuery(
-						"select b from Book b " +
-								"left join fetch b.authors " +
-								"where b in :books", Book.class)
-				.setParameter("books", books)
 				.getResultList();
 	}
 
@@ -141,40 +121,23 @@ public class BookRepositoryJpa implements BookRepository {
 
 	@Override
 	public List<Book> getByAuthorFirstNameAndLastName(String firstName, String lastName) {
-
-		val authors = em.createQuery(
-						"select distinct a from Author a " +
-								"join fetch a.books " +
-								"where a.firstName in :names " +
-								"and a.lastName in :names", Author.class)
-				.setParameter("names", List.of(firstName, lastName))
-				.getResultList();
-
-		var books = authors.stream()
-				.flatMap(a -> a.getBooks().stream())
-				.collect(Collectors.toList());
-
-		books = em.createQuery(
-						"select distinct b from Book b " +
+		return  em.createQuery(
+						"select b from Book b " +
 								"left join fetch b.genres " +
-								"where b in :books", Book.class)
-				.setParameter("books", books)
-				.getResultList();
-
-		books = em.createQuery(
-						"select distinct b from Book b " +
 								"left join fetch b.authors " +
-								"where b in :books", Book.class)
-				.setParameter("books", books)
+								"where (select a from Author a where a.firstName = :firstName and a.lastName = :lastName) " +
+								"member of b.authors",
+						Book.class)
+				.setParameter("firstName", firstName)
+				.setParameter("lastName", lastName)
 				.getResultList();
 
-		return books;
 	}
 
 	@Override
 	public List<BookComment> getBookCommentsByBookId(long bookId) {
 		val graph = em.getEntityGraph("book.comments");
 		val book = em.find(Book.class, bookId, Map.of("javax.persistence.fetchgraph", graph));
-		return book.getBookComments();
+		return new ArrayList<>(book.getBookComments());
 	}
 }

@@ -5,8 +5,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 
 @Entity
@@ -27,22 +28,34 @@ public class Author {
 	private String lastName;
 
 	@ManyToMany(mappedBy = "authors")
-	private List<Book> books;
+	private Set<Book> books = new HashSet<>();
 
 	public Author(Long id, String firstName, String lastName) {
 		this.id = id;
 		this.firstName = firstName;
 		this.lastName = lastName;
-		this.books = new ArrayList<>();
 	}
 
 	public Author(String firstName, String lastName) {
 		this.firstName = firstName;
 		this.lastName = lastName;
-		this.books = new ArrayList<>();
 	}
 
 	public String toString() {
 		return "Author(id=" + this.getId() + ", firstName=" + this.getFirstName() + ", lastName=" + this.getLastName() + ")";
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Author author = (Author) o;
+		if (null == id) return false;
+		return id.equals(author.id);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
 	}
 }

@@ -4,12 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
-import java.util.List;
-import java.util.Objects;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "books")
@@ -33,29 +31,28 @@ public class Book {
 	@JoinTable(name = "books_authors",
 			joinColumns = @JoinColumn(name = "book_id"),
 			inverseJoinColumns = @JoinColumn(name = "author_id"))
-	private List<Author> authors;
+	private Set<Author> authors = new HashSet<>();
 
-	@Fetch(FetchMode.SUBSELECT)
 	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinTable(name = "books_genres",
 			joinColumns = @JoinColumn(name = "book_id"),
 			inverseJoinColumns = @JoinColumn(name = "genre_id"))
-	private List<Genre> genres;
+	private Set<Genre> genres = new HashSet<>();
 
 
 	@OneToMany(
 			mappedBy = "book",
 			cascade = CascadeType.ALL,
 			orphanRemoval = true)
-	private List<BookComment> bookComments;
+	private Set<BookComment> bookComments = new HashSet<>();
 
-	public Book(String title, List<Author> authors, List<Genre> genres) {
+	public Book(String title, Set<Author> authors, Set<Genre> genres) {
 		this.title = title;
 		this.genres = genres;
 		this.authors = authors;
 	}
 
-	public Book(long id, String title, List<Author> authors, List<Genre> genres) {
+	public Book(long id, String title, Set<Author> authors, Set<Genre> genres) {
 		this.id = id;
 		this.title = title;
 		this.genres = genres;
@@ -72,12 +69,15 @@ public class Book {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		Book book = (Book) o;
-		return title.equals(book.title) && authors.equals(book.authors) && Objects.equals(genres, book.genres);
+		if (null == id) return false;
+		return id.equals(book.id);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(title, authors, genres);
+		int hashCode = 17;
+		hashCode += null == getId() ? getTitle().hashCode() : getId().hashCode() * 31;
+		return hashCode;
 	}
 }
 
