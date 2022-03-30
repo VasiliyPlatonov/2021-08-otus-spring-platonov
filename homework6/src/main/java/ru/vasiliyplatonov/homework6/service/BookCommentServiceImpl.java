@@ -18,7 +18,6 @@ public class BookCommentServiceImpl implements BookCommentService {
 
 
 	@Override
-	@Transactional(readOnly = true)
 	public BookComment getById(long id) {
 		val commentOpt = bookCommentRepository.getById(id);
 		return commentOpt.orElse(null);
