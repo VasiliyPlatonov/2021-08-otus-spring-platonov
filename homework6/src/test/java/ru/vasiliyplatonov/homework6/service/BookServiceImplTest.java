@@ -42,21 +42,9 @@ class BookServiceImplTest {
 
 		assertThat(actualBook)
 				.usingRecursiveComparison()
-				.ignoringFields("authors", "genres", "bookComments")
+				.ignoringFields("authors.books", "bookComments")
 				.isEqualTo(EXPECTED_BOOK_1);
 	}
-
-	@Test
-	@DisplayName("should return book by id with all info")
-	void shouldReturnBookByIdWithAllInfo() {
-		val actualBook = bookService.getByIdFullyCompleted(EXPECTED_BOOK_1.getId());
-
-		assertThat(actualBook)
-				.usingRecursiveComparison()
-				.ignoringFields("authors.books")
-				.isEqualTo(EXPECTED_BOOK_1);
-	}
-
 
 	@Test
 	@DisplayName("should return books by its genre")
@@ -120,7 +108,7 @@ class BookServiceImplTest {
 				expectedAuthors,
 				expectedGenres));
 
-		val actualBook = bookService.getByIdFullyCompleted(expectedBook.getId());
+		val actualBook = bookService.getById(expectedBook.getId());
 
 		assertThat(actualBook)
 				.isNotNull()
@@ -135,7 +123,7 @@ class BookServiceImplTest {
 	@DisplayName("should correct update book with existing and not author and genre")
 	void shouldCorrectUpdateBook() {
 		val bookId = EXPECTED_BOOK_1.getId();
-		val expectedBook = bookService.getByIdFullyCompleted(bookId);
+		val expectedBook = bookService.getById(bookId);
 
 		val existingAuthor = expectedBook.getAuthors().iterator().next();
 		val existingGenre = expectedBook.getGenres().iterator().next();
@@ -149,7 +137,7 @@ class BookServiceImplTest {
 
 		bookService.update(expectedBook);
 
-		val actualBook = bookService.getByIdFullyCompleted(bookId);
+		val actualBook = bookService.getById(bookId);
 
 		assertThat(actualBook)
 				.isNotNull()

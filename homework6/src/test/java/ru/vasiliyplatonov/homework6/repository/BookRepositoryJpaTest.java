@@ -74,16 +74,6 @@ class BookRepositoryJpaTest {
 	}
 
 	@Test
-	@DisplayName("should return book by id with all info")
-	void shouldReturnBookByIdWithAllInfo() {
-		val actualBook = bookRepository.getByIdFullyCompleted(EXPECTED_BOOK_1.getId());
-
-		assertThat(actualBook)
-				.usingRecursiveComparison()
-				.isEqualTo(Optional.of(EXPECTED_BOOK_1));
-	}
-
-	@Test
 	@DisplayName("should return books by its genre")
 	void shouldReturnBooksByGenre() {
 		val actualBooks = bookRepository.getByGenre(EXPECTED_GENRE_1);

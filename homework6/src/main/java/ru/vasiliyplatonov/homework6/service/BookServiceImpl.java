@@ -55,20 +55,7 @@ public class BookServiceImpl implements BookService {
 	@Override
 	@Transactional(readOnly = true)
 	public Book getById(long id) {
-		val book = bookRepository.getById(id);
-		return book.orElse(null);
-	}
-
-	@Override
-	@Transactional(readOnly = true)
-	public Book getByIdFullyCompleted(long id) {
-		final var book = bookRepository.getByIdFullyCompleted(id).orElse(null);
-
-		book.getGenres().forEach(Object::hashCode);
-		book.getBookComments().forEach(Object::hashCode);
-		book.getAuthors().forEach(Object::hashCode);
-
-		return book;
+		return bookRepository.getById(id).orElse(null);
 	}
 
 	@Override

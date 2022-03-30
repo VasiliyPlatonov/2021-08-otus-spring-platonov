@@ -13,8 +13,6 @@ public interface BookService {
 
 	Book getById(long id);
 
-	Book getByIdFullyCompleted(long id);
-
 	List<Book> getAll();
 
 	List<Book> getByTitle(String title);

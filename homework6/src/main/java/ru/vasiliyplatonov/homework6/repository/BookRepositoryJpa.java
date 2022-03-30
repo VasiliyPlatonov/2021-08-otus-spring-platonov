@@ -24,14 +24,8 @@ public class BookRepositoryJpa implements BookRepository {
 	@PersistenceContext
 	private final EntityManager em;
 
-
 	@Override
 	public Optional<Book> getById(long id) {
-		return Optional.ofNullable(em.find(Book.class, id));
-	}
-
-	@Override
-	public Optional<Book> getByIdFullyCompleted(long id) {
 		try {
 			var book = em.createQuery(
 							"select distinct b from Book b " +

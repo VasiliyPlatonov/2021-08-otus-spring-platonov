@@ -41,7 +41,7 @@ public class ApplicationCommands {
 			}
 			case "-id": {
 				return bookTableRenderer.render(
-						bookService.getByIdFullyCompleted(Long.parseLong(filterValue)));
+						bookService.getById(Long.parseLong(filterValue)));
 			}
 			case "-genre": {
 				return bookTableRenderer.render(
@@ -80,7 +80,7 @@ public class ApplicationCommands {
 	@ShellMethod(value = "Update book", key = {"book-update"}, group = "book", prefix = "-")
 	public String updateBook(@NotBlank Long id) {
 
-		val book = bookService.getByIdFullyCompleted(id);
+		val book = bookService.getById(id);
 		ioService.outLine(book.toString());
 
 		val updatedBook = bookInteractiveUpdater.update(book);
