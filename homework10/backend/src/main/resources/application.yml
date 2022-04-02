@@ -1,0 +1,18 @@
+spring:
+  mongodb:
+    embedded:
+      version: 4.4.9
+  data:
+    mongodb:
+      host: 0.0.0.0
+      port: 27017
+      database: library
+
+
+mongock:
+  migration-scan-package:
+    ru.vasiliyplatonov.backend.changelog
+  runner-type: "InitializingBean"
+
+server:
+  port: 8089
