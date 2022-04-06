@@ -45,20 +45,17 @@ public class BookServiceImpl implements BookService {
 	}
 
 	@Override
-	@Transactional(readOnly = true)
 	public Optional<Book> findById(long id) {
 		return bookRepository.findById(id);
 	}
 
 
 	@Override
-	@Transactional(readOnly = true)
 	public List<Book> findAll() {
 		return bookRepository.findAll();
 	}
 
 	@Override
-	@Transactional(readOnly = true)
 	public List<Book> findByTitle(String title) {
 		return bookRepository.findByTitle(title);
 	}
@@ -76,7 +73,6 @@ public class BookServiceImpl implements BookService {
 	}
 
 	@Override
-	@Transactional(readOnly = true)
 	public List<Book> findByGenre(Genre genre) {
 		return bookRepository.findByGenresIn(Set.of(genre));
 	}

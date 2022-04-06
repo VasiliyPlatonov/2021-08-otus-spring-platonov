@@ -19,25 +19,21 @@ public class BookCommentServiceImpl implements BookCommentService {
 
 
 	@Override
-	@Transactional(readOnly = true)
 	public Optional<BookComment> findById(long id) {
 		return bookCommentRepository.findById(id);
 	}
 
 	@Override
-	@Transactional(readOnly = true)
 	public List<BookComment> findByBookId(long id) {
 		return bookCommentRepository.findByBookId(id);
 	}
 
 	@Override
-	@Transactional
 	public BookComment add(BookComment bookComment) {
 		return bookCommentRepository.save(bookComment);
 	}
 
 	@Override
-	@Transactional
 	public void delete(long id) throws NoSuchElementException {
 		bookCommentRepository.deleteById(id);
 	}
