@@ -2,7 +2,6 @@ package ru.vasiliyplatonov.homework7.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.val;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.vasiliyplatonov.homework7.domain.BookComment;
@@ -29,12 +28,6 @@ public class BookCommentServiceImpl implements BookCommentService {
 	@Transactional(readOnly = true)
 	public List<BookComment> findByBookId(long id) {
 		return bookCommentRepository.findByBookId(id);
-	}
-
-	@Override
-	@Transactional(readOnly = true)
-	public List<BookComment> findByBookId(long id, int max) {
-		return bookCommentRepository.findByBookId(id, Pageable.ofSize(max));
 	}
 
 	@Override

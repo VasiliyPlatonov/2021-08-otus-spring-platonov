@@ -40,20 +40,6 @@ class BookCommentServiceImplTest {
 				.isEqualTo(expectedComments);
 	}
 
-	@Test
-	@DisplayName("should return comments of book by book id and max count")
-	void shouldReturnSpecifiedCountOfBookComment() {
-		val max = 2;
-		val existingBookId = EXPECTED_BOOK_1.getId();
-		val expectedComments = List.of(EXPECTED_BOOK_COMMENT_1, EXPECTED_BOOK_COMMENT_2);
-
-		val actualComments = bookCommentService.findByBookId(existingBookId, max);
-
-		assertThat(actualComments)
-				.usingRecursiveComparison()
-				.ignoringFields("book.authors", "book.genres")
-				.isEqualTo(expectedComments);
-	}
 
 	@Test
 //	@Transactional

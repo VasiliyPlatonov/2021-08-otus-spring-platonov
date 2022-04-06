@@ -11,8 +11,6 @@ public interface BookCommentService {
 
 	List<BookComment> findByBookId(long id);
 
-	List<BookComment> findByBookId(long id, int max);
-
 	BookComment add(BookComment bookComment);
 
 	void delete(long id);
